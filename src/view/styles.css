@@ -1,0 +1,82 @@
+.white-pane{
+    -fx-background-color: #fff;
+}
+
+.blue-pane{
+    -fx-background-color: linear-gradient(#86adcc 0%, #b8c6cf 20%, #d4e4ef 50%, #b8c6cf 80%, #86adcc 100%)
+}
+
+.gray-pane{
+    -fx-background-color: linear-gradient(#fafafa 0%, #c4c4c4 50%, #b1b4b5 100%)
+}
+
+.bordered-pane{
+    -fx-border-color: #123677;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.button{
+    -fx-cursor: hand;
+}
+
+.green-button{
+    -fx-background-color:
+    #006600,
+    linear-gradient(#009900 0%, #009933 20%, #006600 100%),
+    linear-gradient(#009933, #006600),
+    radial-gradient(center 50% 0%, radius 100%, rgba(70,138,83,0.9), rgba(255,255,255,0));
+    -fx-background-radius: 5,4,3,5;
+    -fx-background-insets: 0,1,2,0;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
+    -fx-text-fill: linear-gradient(white, #d0d0d0);
+    -fx-padding: 10 20 10 20;
+}
+
+.green-button:hover{
+    -fx-background-color:
+    #006600,
+    linear-gradient(#006600 0%, #009933 20%, #009900 100%),
+    linear-gradient(#006600, #009933),
+    radial-gradient(center 50% 0%, radius 100%, rgba(70,138,83,0.9), rgba(255,255,255,0));
+}
+
+.green-button:pressed{
+    -fx-background-color:
+    #006600,
+    linear-gradient(#008800 0%, #008822 20%, #005500 100%),
+    linear-gradient(#008822, #005500),
+    radial-gradient(center 50% 0%, radius 100%, rgba(80,145,92,0.9), rgba(255,255,255,0));
+}
+
+.red-button{
+    -fx-background-color:
+    #006600,
+    linear-gradient(#990000 0%, #990033 20%, #660000 100%),
+    linear-gradient(#990033, #660000),
+    radial-gradient(center 50% 0%, radius 100%, rgba(138,70,83,0.9), rgba(255,255,255,0));
+    -fx-background-radius: 5,4,3,5;
+    -fx-background-insets: 0,1,2,0;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
+    -fx-text-fill: linear-gradient(white, #d0d0d0);
+    -fx-padding: 10 20 10 20;
+}
+
+.red-button:hover{
+    -fx-background-color:
+    #006600,
+    linear-gradient(#660000 0%, #990033 20%, #990000 100%),
+    linear-gradient(#660000, #990033),
+    radial-gradient(center 50% 0%, radius 100%, rgba(138,70,83,0.9), rgba(255,255,255,0));
+}
+
+.red-button:pressed{
+    -fx-background-color:
+    #006600,
+    linear-gradient(#880000 0%, #880022 20%, #550000 100%),
+    linear-gradient(#880022, #550000),
+    radial-gradient(center 50% 0%, radius 100%, rgba(145,145,92,0.9), rgba(255,255,255,0));
+}
+
