@@ -38,6 +38,10 @@ public class AckSearch extends Message{
         this.fileNames = fileNames;
     }
 
+    public AckSearch(String message){
+        this.decodeMessage(message);
+    }
+
     public void setNoOfFiles(int noOfFiles) {
         this.noOfFiles = noOfFiles;
     }

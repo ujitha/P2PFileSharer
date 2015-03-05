@@ -25,6 +25,10 @@ public class AckJoin extends Message{
         this.value=value;
     }
 
+    public AckJoin(String message){
+        this.decodeMessage(message);
+    }
+
     public void setValue(int value) {
         this.value = value;
     }

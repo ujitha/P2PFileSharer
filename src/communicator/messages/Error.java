@@ -14,6 +14,9 @@ public class Error extends Message {
 
     private String error;
 
+    public Error(){
+        this.error=null;
+    }
     public Error(String error) {
         this.error = error;
     }

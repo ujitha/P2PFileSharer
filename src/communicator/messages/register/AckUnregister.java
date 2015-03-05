@@ -22,6 +22,10 @@ public class AckUnregister extends Message {
         this.value=value;
     }
 
+    public AckUnregister(String message){
+        this.decodeMessage(message);
+    }
+
     public void setValue(int value) {
         this.value = value;
     }

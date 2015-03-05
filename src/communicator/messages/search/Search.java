@@ -29,6 +29,10 @@ public class Search extends Message {
         this.hops=hops;
     }
 
+    public Search(String message){
+        this.decodeMessage(message);
+    }
+
     public void setIp(String ip) {
         this.ip = ip;
     }

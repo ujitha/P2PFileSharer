@@ -23,6 +23,10 @@ public class Join extends Message{
         this.port=port;
     }
 
+    public Join(String message){
+        this.decodeMessage(message);
+    }
+
     public void setIp(String ip) {
         this.ip = ip;
     }

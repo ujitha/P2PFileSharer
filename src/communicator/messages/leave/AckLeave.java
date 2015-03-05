@@ -22,6 +22,10 @@ public class AckLeave extends Message {
         this.value=value;
     }
 
+    public AckLeave(String message){
+        this.decodeMessage(message);
+    }
+
     public void setValue(int value) {
         this.value = value;
     }

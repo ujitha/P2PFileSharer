@@ -24,6 +24,10 @@ public class Leave extends Message{
         this.port=port;
     }
 
+    public Leave(String message){
+        this.decodeMessage(message);
+    }
+
     public void setIpAddress(String ipAddress) {
         this.ipAddress = ipAddress;
     }

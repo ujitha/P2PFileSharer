@@ -15,6 +15,7 @@ public abstract class Message {
 //    }
     //
 
+
     public abstract String toString();
     public abstract void decodeMessage(String message);
 }

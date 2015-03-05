@@ -25,6 +25,10 @@ public class Register extends Message{
         this.userName=userName;
     }
 
+    public Register(String message){
+        this.decodeMessage(message);
+    }
+
     public void setIpAddress(String ipAddress) {
         this.ipAddress = ipAddress;
     }

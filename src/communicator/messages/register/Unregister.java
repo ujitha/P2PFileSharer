@@ -26,6 +26,10 @@ public class Unregister extends Message{
         this.userName=userName;
     }
 
+    public Unregister(String message){
+        this.decodeMessage(message);
+    }
+
     public void setIpAddress(String ipAddress) {
         this.ipAddress = ipAddress;
     }

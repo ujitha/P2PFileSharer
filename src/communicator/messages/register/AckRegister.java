@@ -48,6 +48,10 @@ public class AckRegister extends Message {
         this.port2=port2;
     }
 
+    public AckRegister(String message){
+        this.decodeMessage(message);
+    }
+
     public void setNoNodes(int noNodes) {
         this.noNodes = noNodes;
     }
