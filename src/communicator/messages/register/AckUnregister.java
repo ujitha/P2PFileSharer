@@ -1,7 +1,6 @@
 package communicator.messages.register;
 
 import communicator.messages.Message;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * Created by lasitha on 3/5/15.
@@ -33,6 +32,9 @@ public class AckUnregister extends Message {
 
     @Override
     public String toString() {
-        throw new NotImplementedException();
+        /*0012 UNROK 0*/
+        String msg=" UNROK "+value;
+        msg=String.format("%04d",msg.length())+msg;
+        return msg;
     }
 }

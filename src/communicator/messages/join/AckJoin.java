@@ -1,7 +1,7 @@
 package communicator.messages.join;
 
 import communicator.messages.Message;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 
 /**
  * Created by lasitha on 3/5/15.
@@ -33,6 +33,9 @@ public class AckJoin extends Message{
 
     @Override
     public String toString() {
-        throw new NotImplementedException();
+        /*0014 JOINOK 0*/
+        String msg=" JOINOK "+value;
+        msg=String.format("%04d",msg.length())+msg;
+        return msg;
     }
 }

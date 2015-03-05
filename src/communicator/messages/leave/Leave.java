@@ -1,7 +1,6 @@
 package communicator.messages.leave;
 
 import communicator.messages.Message;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * Created by lasitha on 3/5/15.
@@ -43,6 +42,9 @@ public class Leave extends Message{
 
     @Override
     public String toString() {
-        throw new NotImplementedException();
+        /*0028 LEAVE 64.12.123.190 432*/
+        String msg=" LEAVE "+ipAddress+" "+port;
+        msg=String.format("%04d",msg.length())+msg;
+        return msg;
     }
 }

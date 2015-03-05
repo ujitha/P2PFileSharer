@@ -1,7 +1,6 @@
 package communicator.messages.join;
 
 import communicator.messages.Message;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * Created by lasitha on 3/5/15.
@@ -42,6 +41,9 @@ public class Join extends Message{
 
     @Override
     public String toString() {
-        throw new NotImplementedException();
+        /*0027 JOIN 64.12.123.190 432*/
+        String msg=" JOIN "+ip+" "+port;
+        msg=String.format("%04d",msg.length())+msg;
+        return msg;
     }
 }
