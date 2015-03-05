@@ -1,7 +1,6 @@
 package communicator.messages.leave;
 
 import communicator.messages.Message;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * Created by lasitha on 3/5/15.
@@ -33,6 +32,9 @@ public class AckLeave extends Message {
 
     @Override
     public String toString() {
-        throw new NotImplementedException();
+        /*0014 LEAVEOK 0*/
+        String msg=" LEAVEOK "+value;
+        msg=String.format("%04d",msg.length())+msg;
+        return msg;
     }
 }

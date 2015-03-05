@@ -1,7 +1,6 @@
 package communicator.messages.search;
 
 import communicator.messages.Message;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * Created by lasitha on 3/5/15.
@@ -71,6 +70,9 @@ public class Search extends Message {
 
     @Override
     public String toString() {
-        throw new NotImplementedException();
+        /*length SER IP port file_name hops*/
+        String msg=" SER "+ip+" "+port+" "+fileName+" "+hops;
+        msg=String.format("%04d",msg.length())+msg;
+        return msg;
     }
 }

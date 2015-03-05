@@ -1,7 +1,6 @@
 package communicator.messages.search;
 
 import communicator.messages.Message;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * Created by lasitha on 3/5/15.
@@ -61,6 +60,12 @@ public class AckSearch extends Message{
 
     @Override
     public String toString() {
-        throw new NotImplementedException();
+        /*length SEROK no_files IP port hops filename1 filename2 ... ...*/
+        String msg=" SEROK "+noOfFiles+" "+ip+" "+port+" "+" "+hops;
+        for(String filename:fileNames){
+            msg=msg+" "+filename;
+        }
+        msg=String.format("%04d",msg.length())+msg;
+        return msg;
     }
 }

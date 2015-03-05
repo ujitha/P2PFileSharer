@@ -1,7 +1,6 @@
 package communicator.messages.register;
 
 import communicator.messages.Message;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * Created by lasitha on 3/5/15.
@@ -91,6 +90,14 @@ public class AckRegister extends Message {
 
     @Override
     public String toString() {
-        throw new NotImplementedException();
+        /*length REGOK no_nodes IP_1 port_1 IP_2 port_2  */
+        String msg=" REGOK "+noNodes;
+        if(noNodes==1){
+            msg=msg+" "+ip1+" "+port1;
+        }else if(noNodes==2){
+            msg=msg+" "+ip1+" "+port1+" "+ip2+" "+port2;
+        }
+        msg=String.format("%04d",msg.length())+msg;
+        return msg;
     }
 }
