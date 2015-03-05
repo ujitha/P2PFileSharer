@@ -1,14 +1,12 @@
 package app;
 
+import communicator.MessageCallback;
 import communicator.MessageClient;
+import communicator.Server;
 import communicator.messages.Message;
 import communicator.messages.register.Register;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.net.*;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -20,25 +18,42 @@ public class Node {
     private int BSport;
     private List<String> connectedNodeList;
 
+    private String myIp;
+    private int myDefaultPort;
+    private String myUsername;
 
-    public Node(String BSip,int BSport){
+    public Node(String BSip,int BSport,String myIp,int myDefaultPort,String myUsername){
         this.BSip=BSip;
         this.BSport=BSport;
+        this.myIp=myIp;
+        this.myDefaultPort=myDefaultPort;
+        this.myUsername=myUsername;
         connectedNodeList=new LinkedList<String>();
     }
 
     public void start(){
-        Message registerMsg=new Register("10.216.41.163","6000","user1");
-        Message registerMsg2=new Register("10.216.41.163","7000","user2");
+       this.connectToBS();
+       Server server=new Server(myIp,myDefaultPort,new MessageCallback() {
+            @Override
+            public void receiveMessage(String message) {
+
+            }
+       });
+
+       server.start();
+
+    }
+
+    private void connectToBS(){
+        Message registerMsg=new Register(myIp,Integer.toString(myDefaultPort),myUsername);
         MessageClient messageClient=new MessageClient();
 
         try {
             messageClient.sendMessage(BSip,BSport,registerMsg);
-            messageClient.sendMessage(BSip,BSport,registerMsg2);
+            //TODO has to decode the received message and extract the node IDs
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
 //    private void TCPconnectionStart(){
@@ -102,8 +117,6 @@ public class Node {
 //    }
 
     public static void main(String[] args){
-        Node node=new Node("10.216.41.163",5000);
-        node.start();
 
     }
 }
