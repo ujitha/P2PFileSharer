@@ -36,4 +36,16 @@ public class Register extends Message{
     public void setUserName(String userName) {
         this.userName = userName;
     }
+
+    public String getIpAddress() {
+        return ipAddress;
+    }
+
+    public String getPort() {
+        return port;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
 }

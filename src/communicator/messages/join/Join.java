@@ -30,4 +30,12 @@ public class Join extends Message{
     public void setPort(String port) {
         this.port = port;
     }
+
+    public String getIp() {
+        return ip;
+    }
+
+    public String getPort() {
+        return port;
+    }
 }

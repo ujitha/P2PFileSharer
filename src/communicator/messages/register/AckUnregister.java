@@ -25,4 +25,8 @@ public class AckUnregister extends Message {
     public void setValue(int value) {
         this.value = value;
     }
+
+    public int getValue() {
+        return value;
+    }
 }

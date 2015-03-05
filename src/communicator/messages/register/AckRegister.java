@@ -67,4 +67,24 @@ public class AckRegister extends Message {
     public void setPort2(String port2) {
         this.port2 = port2;
     }
+
+    public int getNoNodes() {
+        return noNodes;
+    }
+
+    public String getIp1() {
+        return ip1;
+    }
+
+    public String getPort1() {
+        return port1;
+    }
+
+    public String getIp2() {
+        return ip2;
+    }
+
+    public String getPort2() {
+        return port2;
+    }
 }
