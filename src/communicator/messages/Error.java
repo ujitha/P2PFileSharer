@@ -27,4 +27,12 @@ public class Error extends Message {
         msg=String.format("%04d",msg.length())+msg;
         return msg;
     }
+
+    @Override
+    public void decodeMessage(String message) {
+        String[] s=message.split(" ");
+        if(s.length>2) {
+            this.error = s[2];
+        }
+    }
 }

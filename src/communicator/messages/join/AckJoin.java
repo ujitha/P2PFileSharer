@@ -2,6 +2,8 @@ package communicator.messages.join;
 
 import communicator.messages.Message;
 
+import java.util.StringTokenizer;
+
 
 /**
  * Created by lasitha on 3/5/15.
@@ -37,5 +39,11 @@ public class AckJoin extends Message{
         String msg=" JOINOK "+value;
         msg=String.format("%04d",msg.length())+msg;
         return msg;
+    }
+
+    @Override
+    public void decodeMessage(String message) {
+        String s=message.split(" ")[2];
+        this.value=Integer.parseInt(s);
     }
 }
