@@ -13,6 +13,7 @@ public abstract class Message {
 //    public int getLength() {
 //        return length;
 //    }
+    //
 
     public abstract String toString();
 }
