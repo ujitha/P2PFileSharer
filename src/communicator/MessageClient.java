@@ -39,12 +39,14 @@ public class MessageClient {
         return userInput;
     }
 
-    public void sendMessage(String destinationIp,int port,Message message) throws IOException {
+    public String sendMessage(String destinationIp,int port,Message message) throws IOException {
           connect(destinationIp,port);
           OutputStream outToServer = clientSocket.getOutputStream();
           PrintStream out = new PrintStream(outToServer);
           out.print(message.toString());
-          readResponse();
+          String receivedMessage=readResponse();
+          clientSocket.close();
+        return receivedMessage;
     }
 
 }

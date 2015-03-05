@@ -4,6 +4,8 @@ import communicator.MessageCallback;
 import communicator.MessageClient;
 import communicator.Server;
 import communicator.messages.Message;
+import communicator.messages.MessageDecoder;
+import communicator.messages.register.AckRegister;
 import communicator.messages.register.Register;
 
 import java.io.IOException;
@@ -49,8 +51,22 @@ public class Node {
         MessageClient messageClient=new MessageClient();
 
         try {
-            messageClient.sendMessage(BSip,BSport,registerMsg);
-            //TODO has to decode the received message and extract the node IDs
+            String receivedMessage=messageClient.sendMessage(BSip,BSport,registerMsg);
+            MessageDecoder messageDecoder=new MessageDecoder();
+            Message message=messageDecoder.decodeMessage(receivedMessage);
+
+            if(message instanceof AckRegister){
+                AckRegister ackRegister=(AckRegister)message;
+                if(ackRegister.getNoNodes()>0){
+                    String connectedNode=ackRegister.getIp1()+":"+ackRegister.getPort1();
+                    connectedNodeList.add(connectedNode);
+                    if(ackRegister.getNoNodes()==2){
+                        String connectedNode2=ackRegister.getIp2()+":"+ackRegister.getPort2();
+                        connectedNodeList.add(connectedNode2);
+                    }
+                }
+            }
+      
         } catch (IOException e) {
             e.printStackTrace();
         }
