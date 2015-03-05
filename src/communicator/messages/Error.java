@@ -35,7 +35,8 @@ public class Error extends Message {
     public void decodeMessage(String message) {
         String[] s=message.split(" ");
         if(s.length>2) {
-            this.error = s[2];
+            int index=message.indexOf(s[1]);
+            this.error = message.substring(index+s[1].length());
         }
     }
 }

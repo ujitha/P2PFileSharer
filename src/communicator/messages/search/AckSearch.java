@@ -80,9 +80,6 @@ public class AckSearch extends Message{
         this.ip=s[3];
         this.port=s[4];
         this.hops=Integer.parseInt(s[5]);
-        this.fileNames=new String[noOfFiles];
-        for (int i = 0; i <noOfFiles ; i++) {
-            fileNames[i]=s[6+i];
-        }
+        this.fileNames=message.split("\"(.*?)\"");
     }
 }

@@ -85,7 +85,7 @@ public class Search extends Message {
         String[] s=message.split(" ");
         this.ip=s[2];
         this.port=s[3];
-        this.fileName=s[4];
+        this.fileName=message.split("\"(.*?)\"")[0];
         this.hops=Integer.parseInt(s[5]);
     }
 }
