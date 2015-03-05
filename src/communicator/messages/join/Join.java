@@ -46,4 +46,11 @@ public class Join extends Message{
         msg=String.format("%04d",msg.length())+msg;
         return msg;
     }
+
+    @Override
+    public void decodeMessage(String message) {
+        String[] s=message.split(" ");
+        this.ip=s[2];
+        this.port=s[3];
+    }
 }

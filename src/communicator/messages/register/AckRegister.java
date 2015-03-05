@@ -100,4 +100,18 @@ public class AckRegister extends Message {
         msg=String.format("%04d",msg.length())+msg;
         return msg;
     }
+
+    @Override
+    public void decodeMessage(String message) {
+        String[] s=message.split(" ");
+        this.noNodes=Integer.parseInt(s[2]);
+        if(noNodes==1 || noNodes==2){
+            ip1=s[3];
+            port1=s[4];
+        }
+        if(noNodes==2){
+            ip2=s[5];
+            port2=s[6];
+        }
+    }
 }

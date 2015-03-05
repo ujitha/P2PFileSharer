@@ -68,4 +68,17 @@ public class AckSearch extends Message{
         msg=String.format("%04d",msg.length())+msg;
         return msg;
     }
+
+    @Override
+    public void decodeMessage(String message) {
+        String[] s=message.split(" ");
+        this.noOfFiles=Integer.parseInt(s[2]);
+        this.ip=s[3];
+        this.port=s[4];
+        this.hops=Integer.parseInt(s[5]);
+        this.fileNames=new String[noOfFiles];
+        for (int i = 0; i <noOfFiles ; i++) {
+            fileNames[i]=s[6+i];
+        }
+    }
 }

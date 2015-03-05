@@ -37,4 +37,10 @@ public class AckUnregister extends Message {
         msg=String.format("%04d",msg.length())+msg;
         return msg;
     }
+
+    @Override
+    public void decodeMessage(String message) {
+        String s=message.split(" ")[2];
+        this.value=Integer.parseInt(s);
+    }
 }
