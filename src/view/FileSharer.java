@@ -7,6 +7,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -27,6 +28,9 @@ public class FileSharer extends Application {
         }
         Scene scene = new Scene(root);
         primaryStage.setTitle("P2P File Sharer");
+        primaryStage.setMinWidth(800);
+        primaryStage.setMinHeight(600);
+        primaryStage.getIcons().add(new Image(FileSharer.class.getResourceAsStream("images/icon.png")));
         primaryStage.setScene(scene);
         primaryStage.show();
     }
