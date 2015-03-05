@@ -72,6 +72,53 @@ public class Node {
         }
     }
 
+    // Add node's file list
+    public void addFileList(ArrayList<String> fileList) {
+
+        files = fileList;
+    }
+
+    // check the file from node's file List
+    public ArrayList<String> isFileInRepo(String fileName) {
+
+        ArrayList<String> fileList = new ArrayList<>();
+
+        for (int i = 0; i < files.size(); i++) {
+
+            fileName = fileName.toLowerCase();
+            String fileQ = files.get(i).toLowerCase();
+
+            if (fileQ.contains(fileName)) {
+                fileList.add(files.get(i));
+            }
+        }
+
+        for (int i = 0; i < fileList.size(); i++) {
+
+            String[] tokens = fileName.split(" ");  //m of
+            String[] results = fileList.get(i).split(" ");  //mic office
+            boolean valid = false;
+
+            for (int j = 0; j < tokens.length; j++) {
+                for (int k = 0; k < results.length; k++) {
+
+                    if (results[k].toLowerCase().equals(tokens[j].toLowerCase())) {
+                        valid = true;
+                        break;
+                    } else {
+                        valid = false;
+                    }
+                }
+            }
+
+            if (!valid) {
+                fileList.remove(i);
+            }
+        }
+        return fileList;
+    }
+
+
 //    private void TCPconnectionStart(){
 //        Socket client;
 //        try {
