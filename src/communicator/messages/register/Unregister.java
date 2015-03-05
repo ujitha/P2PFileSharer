@@ -1,6 +1,7 @@
 package communicator.messages.register;
 
 import communicator.messages.Message;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * Created by lasitha on 3/5/15.
@@ -48,5 +49,10 @@ public class Unregister extends Message{
 
     public String getUserName() {
         return userName;
+    }
+
+    @Override
+    public String toString() {
+        throw new NotImplementedException();
     }
 }

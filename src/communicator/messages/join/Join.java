@@ -1,6 +1,7 @@
 package communicator.messages.join;
 
 import communicator.messages.Message;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * Created by lasitha on 3/5/15.
@@ -37,5 +38,10 @@ public class Join extends Message{
 
     public String getPort() {
         return port;
+    }
+
+    @Override
+    public String toString() {
+        throw new NotImplementedException();
     }
 }

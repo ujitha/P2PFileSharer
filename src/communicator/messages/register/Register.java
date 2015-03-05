@@ -48,4 +48,13 @@ public class Register extends Message{
     public String getUserName() {
         return userName;
     }
+
+    @Override
+    public String toString() {
+        /*0036 REG 129.82.123.45 5001 1234abcd*/
+        String msg=" REG "+ipAddress+" "+port+" "+userName;
+        int length=msg.length()+5;
+        msg=String.format("%04d", length)+msg;
+        return msg;
+    }
 }

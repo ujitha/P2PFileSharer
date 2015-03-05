@@ -1,6 +1,7 @@
 package communicator.messages.register;
 
 import communicator.messages.Message;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * Created by lasitha on 3/5/15.
@@ -28,5 +29,10 @@ public class AckUnregister extends Message {
 
     public int getValue() {
         return value;
+    }
+
+    @Override
+    public String toString() {
+        throw new NotImplementedException();
     }
 }

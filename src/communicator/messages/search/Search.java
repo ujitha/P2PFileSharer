@@ -1,6 +1,7 @@
 package communicator.messages.search;
 
 import communicator.messages.Message;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * Created by lasitha on 3/5/15.
@@ -66,5 +67,10 @@ public class Search extends Message {
 
     public int getHops() {
         return hops;
+    }
+
+    @Override
+    public String toString() {
+        throw new NotImplementedException();
     }
 }
