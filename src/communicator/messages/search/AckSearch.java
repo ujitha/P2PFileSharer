@@ -38,6 +38,13 @@ public class AckSearch extends Message{
         this.fileNames = fileNames;
     }
 
+    public AckSearch(int noOfFiles, String ip, String port, int hops) {
+        this.noOfFiles = noOfFiles;
+        this.ip = ip;
+        this.port = port;
+        this.hops = hops;
+    }
+
     public AckSearch(String message){
         this.decodeMessage(message);
     }
@@ -60,6 +67,26 @@ public class AckSearch extends Message{
 
     public void setFileNames(String[] fileNames) {
         this.fileNames = fileNames;
+    }
+
+    public int getNoOfFiles() {
+        return noOfFiles;
+    }
+
+    public String getIp() {
+        return ip;
+    }
+
+    public String getPort() {
+        return port;
+    }
+
+    public String[] getFileNames() {
+        return fileNames;
+    }
+
+    public int getHops() {
+        return hops;
     }
 
     @Override

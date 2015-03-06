@@ -32,7 +32,7 @@ public class MessageClient {
         BufferedReader stdIn = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
         System.out.println("Response from server:");
-        while ((userInput = stdIn.readLine()) != null) {
+        if((userInput=stdIn.readLine())!=null){
             System.out.println(userInput);
         }
 
