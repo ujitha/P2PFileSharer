@@ -254,6 +254,12 @@ public class DSManager {
             }
         }
 
+        if(!hasNode)
+        {
+            connectedNodeList.add(node);
+            controller.addNeighbour(node);
+        }
+
         return hasNode;
 
     }
@@ -338,6 +344,11 @@ public class DSManager {
 
             } catch (IOException e) {
                 e.printStackTrace();
+            }
+            finally {
+                for (int j = 0; j <connectedNodeList.size() ; j++) {
+                    controller.addNeighbour(connectedNodeList.get(i));
+                }
             }
 
         }
