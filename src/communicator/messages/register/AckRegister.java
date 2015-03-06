@@ -121,12 +121,12 @@ public class AckRegister extends Message {
     public void decodeMessage(String message) {
         String[] s=message.split(" ");
         this.noNodes=Integer.parseInt(s[2]);
-        if(noNodes==1 || noNodes==2){
+        if(noNodes>=1 && noNodes<9996){
             ip1=s[3];
             port1=s[4];
             userName1=s[5];
         }
-        if(noNodes==2){
+        if(noNodes>=2 && noNodes<9996){
             ip2=s[6];
             port2=s[7];
             userName2=s[8];
