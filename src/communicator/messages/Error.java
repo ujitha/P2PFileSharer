@@ -36,7 +36,7 @@ public class Error extends Message {
         String[] s=message.split(" ");
         if(s.length>2) {
             int index=message.indexOf(s[1]);
-            this.error = message.substring(index+s[1].length());
+            this.error = message.substring(1+index+s[1].length());
         }
     }
 }

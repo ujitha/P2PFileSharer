@@ -2,6 +2,9 @@ package communicator.messages.search;
 
 import communicator.messages.Message;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * Created by lasitha on 3/5/15.
  */
@@ -10,7 +13,8 @@ public class AckSearch extends Message{
       /*
         length SEROK no_files IP port hops filename1 filename2 ... ...
 
-        e.g., Suppose we are searching for string baby. So it will return, 0114 SEROK 3 129.82.128.1 2301 baby_go_home.mp3 baby_come_back.mp3 baby.mpeg
+        e.g., Suppose we are searching for string baby. So it will return,
+         0114 SEROK 3 129.82.128.1 2301 baby_go_home.mp3 baby_come_back.mp3 baby.mpeg
         length – Length of the entire message including 4 characters used to indicate the length. In xxxx format.
         SEROK – Sends the result for search. The node that sends this message is the one that actually stored the (key, value) pair, i.e., node that index the file information.
         no_files – Number of results returned
@@ -92,10 +96,10 @@ public class AckSearch extends Message{
     @Override
     public String toString() {
         /*length SEROK no_files IP port hops filename1 filename2 ... ...*/
-        String msg=" SEROK "+noOfFiles+" "+ip+" "+port+" "+" "+hops;
+        String msg=" SEROK "+noOfFiles+" "+ip+" "+port+" "+hops;
         if(fileNames!=null) {
             for (String filename : fileNames) {
-                msg = msg + " " + filename;
+                msg = msg + " \"" + filename+"\"";
             }
         }
         msg=String.format("%04d",msg.length()+4)+msg;
@@ -109,6 +113,16 @@ public class AckSearch extends Message{
         this.ip=s[3];
         this.port=s[4];
         this.hops=Integer.parseInt(s[5]);
-        this.fileNames=message.split("\"(.*?)\"");
+
+        Pattern pattern = Pattern.compile("\"(.*?)\"");
+        Matcher matcher = pattern.matcher(message);
+        int i=0;
+        fileNames=new String[noOfFiles];
+        while (matcher.find())
+        {
+            fileNames[i]=matcher.group(1);
+            i++;
+        }
+
     }
 }
