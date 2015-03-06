@@ -30,13 +30,25 @@ public class AckRegister extends Message {
     private String port1;
     private String ip2;
     private String port2;
+    private String userName1;
+    private String userName2;
 
     public AckRegister(int noNodes){
         this.noNodes=noNodes;
     }
+
+    public String getUserName1() {
+        return userName1;
+    }
+
+    public String getUserName2() {
+        return userName2;
+    }
+
     public AckRegister(int noNodes,String ip1,String port1){
         this.noNodes=noNodes;
         this.ip1=ip1;
+
         this.port1=port1;
     }
 
