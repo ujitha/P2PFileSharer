@@ -17,11 +17,14 @@ public class Join extends Message{
      */
     private String ip;
     private String port;
+    private String userName;
 
-    public Join(String ip,String port){
+    public Join(String ip,String port,String userName){
         this.ip=ip;
         this.port=port;
+        this.userName=userName;
     }
+
 
     public Join(String message){
         this.decodeMessage(message);
@@ -35,6 +38,10 @@ public class Join extends Message{
         this.port = port;
     }
 
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
     public String getIp() {
         return ip;
     }
@@ -43,10 +50,16 @@ public class Join extends Message{
         return port;
     }
 
+    public String getUserName() {
+        return userName;
+    }
+
+
+
     @Override
     public String toString() {
         /*0027 JOIN 64.12.123.190 432*/
-        String msg=" JOIN "+ip+" "+port;
+        String msg=" JOIN "+ip+" "+port+" "+userName;
         msg=String.format("%04d",msg.length()+4)+msg;
         return msg;
     }
@@ -56,5 +69,6 @@ public class Join extends Message{
         String[] s=message.split(" ");
         this.ip=s[2];
         this.port=s[3];
+        this.userName=s[4];
     }
 }

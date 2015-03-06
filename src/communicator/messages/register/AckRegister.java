@@ -108,10 +108,10 @@ public class AckRegister extends Message {
     public String toString() {
         /*length REGOK no_nodes IP_1 port_1 IP_2 port_2  */
         String msg=" REGOK "+noNodes;
-        if(noNodes==1){
-            msg=msg+" "+ip1+" "+port1;
+        if(noNodes==1 || noNodes==2){
+            msg=msg+" "+ip1+" "+port1+" "+userName1;
         }else if(noNodes==2){
-            msg=msg+" "+ip1+" "+port1+" "+ip2+" "+port2;
+            msg=msg+" "+ip2+" "+port2+" "+userName2;
         }
         msg=String.format("%04d",msg.length()+4)+msg;
         return msg;
@@ -124,10 +124,12 @@ public class AckRegister extends Message {
         if(noNodes==1 || noNodes==2){
             ip1=s[3];
             port1=s[4];
+            userName1=s[5];
         }
         if(noNodes==2){
-            ip2=s[5];
-            port2=s[6];
+            ip2=s[6];
+            port2=s[7];
+            userName2=s[8];
         }
     }
 }
