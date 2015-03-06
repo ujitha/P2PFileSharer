@@ -1,14 +1,19 @@
 package view;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -38,10 +43,14 @@ public class FSViewController implements Initializable {
     Button searchBtn;
     @FXML
     VBox fileList;
+    @FXML
+    Button logBtn;
 
     DummyResponse dmr;
     PopupCreator popupCreator;
     boolean connected;
+    Stage logStage;
+    LogWindowController logCtrl;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -58,7 +67,24 @@ public class FSViewController implements Initializable {
         filePane.setDisable(true);
         routingPane.setDisable(true);
 
+        initLogWindow();
         setHandlers();
+    }
+
+    private void initLogWindow(){
+        AnchorPane logWindow = null;
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            logWindow = fxmlLoader.load(getClass().getResource("LogWindow.fxml"));
+            logCtrl = fxmlLoader.getController();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        logStage = new Stage(StageStyle.UTILITY);
+        Scene logScene = new Scene(logWindow);
+        logStage.setTitle("Log Window");
+        logStage.setScene(logScene);
     }
 
     private void setHandlers() {
@@ -123,6 +149,10 @@ public class FSViewController implements Initializable {
             searchBtn.setText("Search File");
             searchBtn.setDisable(false);
         });
+
+        logBtn.setOnAction((event)->{
+            logStage.show();
+        });
     }
 
     private boolean connectToNetwork() {
@@ -151,7 +181,7 @@ public class FSViewController implements Initializable {
         return false;
     }
 
-    private boolean disconnectFromNetwork(){
+    private boolean disconnectFromNetwork() {
         String status = dmr.disconnect();
         if (status.equals("OK")) {
             connected = false;
