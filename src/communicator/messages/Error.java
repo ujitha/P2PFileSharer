@@ -27,7 +27,7 @@ public class Error extends Message {
         if(error!=null) {
             msg = msg + " " + error;
         }
-        msg=String.format("%04d",msg.length())+msg;
+        msg=String.format("%04d",msg.length()+4)+msg;
         return msg;
     }
 

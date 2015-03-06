@@ -38,7 +38,7 @@ public class AckLeave extends Message {
     public String toString() {
         /*0014 LEAVEOK 0*/
         String msg=" LEAVEOK "+value;
-        msg=String.format("%04d",msg.length())+msg;
+        msg=String.format("%04d",msg.length()+4)+msg;
         return msg;
     }
 

@@ -48,7 +48,7 @@ public class Leave extends Message{
     public String toString() {
         /*0028 LEAVE 64.12.123.190 432*/
         String msg=" LEAVE "+ipAddress+" "+port;
-        msg=String.format("%04d",msg.length())+msg;
+        msg=String.format("%04d",msg.length()+4)+msg;
         return msg;
     }
 

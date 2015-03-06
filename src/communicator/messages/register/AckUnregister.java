@@ -38,7 +38,7 @@ public class AckUnregister extends Message {
     public String toString() {
         /*0012 UNROK 0*/
         String msg=" UNROK "+value;
-        msg=String.format("%04d",msg.length())+msg;
+        msg=String.format("%04d",msg.length()+4)+msg;
         return msg;
     }
 
