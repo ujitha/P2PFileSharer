@@ -62,6 +62,7 @@ public class DSManager {
         this.controller = controller;
 
         String username = "user:" + myIp+myPort;
+        username=username.substring(username.length()-7,username.length());
         node = new Node(myIp, myPort, username);
         fileRepo = new FileRepo();
         addFilesToNode();

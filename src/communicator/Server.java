@@ -35,6 +35,7 @@ public class Server extends Thread{
                 Socket server=serverSocket.accept();
                 DataInputStream in =new DataInputStream(server.getInputStream());
                 String msg=in.readUTF();
+                System.out.println(msg);
                 messageCallback.receiveMessage(msg);
 
             } catch (IOException e) {
