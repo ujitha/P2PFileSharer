@@ -2,6 +2,9 @@ package communicator.messages.search;
 
 import communicator.messages.Message;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * Created by lasitha on 3/5/15.
  */
@@ -75,7 +78,7 @@ public class Search extends Message {
     @Override
     public String toString() {
         /*length SER IP port file_name hops*/
-        String msg=" SER "+ip+" "+port+" "+fileName+" "+hops;
+        String msg=" SER "+ip+" "+port+" \""+fileName+"\" "+hops;
         msg=String.format("%04d",msg.length()+4)+msg;
         return msg;
     }
@@ -85,7 +88,13 @@ public class Search extends Message {
         String[] s=message.split(" ");
         this.ip=s[2];
         this.port=s[3];
-        this.fileName=message.split("\"(.*?)\"")[0];
-        this.hops=Integer.parseInt(s[5]);
+        Pattern pattern = Pattern.compile("\"(.*?)\"");
+        Matcher matcher = pattern.matcher(message);
+        if (matcher.find())
+        {
+            fileName=matcher.group(1);
+        }
+
+        this.hops=Integer.parseInt(s[s.length-1]);
     }
 }

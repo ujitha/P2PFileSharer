@@ -48,4 +48,10 @@ public class MessageDecoder {
         }
         return m;
     }
+
+    public static void main(String[] args){
+        String s="0010 ERROR some error";
+        Message m=new MessageDecoder().decodeMessage(s);
+        System.out.println(m.toString());
+    }
 }
