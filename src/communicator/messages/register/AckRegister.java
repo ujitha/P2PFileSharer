@@ -113,7 +113,7 @@ public class AckRegister extends Message {
         }else if(noNodes==2){
             msg=msg+" "+ip1+" "+port1+" "+ip2+" "+port2;
         }
-        msg=String.format("%04d",msg.length())+msg;
+        msg=String.format("%04d",msg.length()+4)+msg;
         return msg;
     }
 

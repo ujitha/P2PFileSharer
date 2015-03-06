@@ -47,7 +47,7 @@ public class Join extends Message{
     public String toString() {
         /*0027 JOIN 64.12.123.190 432*/
         String msg=" JOIN "+ip+" "+port;
-        msg=String.format("%04d",msg.length())+msg;
+        msg=String.format("%04d",msg.length()+4)+msg;
         return msg;
     }
 

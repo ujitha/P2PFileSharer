@@ -76,7 +76,7 @@ public class Search extends Message {
     public String toString() {
         /*length SER IP port file_name hops*/
         String msg=" SER "+ip+" "+port+" "+fileName+" "+hops;
-        msg=String.format("%04d",msg.length())+msg;
+        msg=String.format("%04d",msg.length()+4)+msg;
         return msg;
     }
 

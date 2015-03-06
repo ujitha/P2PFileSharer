@@ -57,7 +57,7 @@ public class Register extends Message{
     public String toString() {
         /*0036 REG 129.82.123.45 5001 1234abcd*/
         String msg=" REG "+ipAddress+" "+port+" "+userName;
-        int length=msg.length()+5;
+        int length=msg.length()+4;
         msg=String.format("%04d", length)+msg;
         return msg;
     }
