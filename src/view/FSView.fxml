@@ -88,11 +88,11 @@
                   <Font name="System Bold" size="15.0" />
                </font>
             </Label>
-            <TableView layoutX="14.0" layoutY="33.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="30.0">
+            <TableView fx:id="routingTable" layoutX="14.0" layoutY="33.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="30.0">
               <columns>
-                <TableColumn editable="false" prefWidth="193.0" sortable="false" text="Node Name" />
-                <TableColumn editable="false" prefWidth="189.0" sortable="false" text="IP Address" />
-                  <TableColumn fx:id="routingTable" editable="false" prefWidth="115.0" sortable="false" text="Port" />
+                <TableColumn fx:id="nameColumn" editable="false" prefWidth="193.0" sortable="false" text="Node Name" />
+                <TableColumn fx:id="ipColumn" editable="false" prefWidth="189.0" sortable="false" text="IP Address" />
+                  <TableColumn fx:id="portColumn" editable="false" prefWidth="115.0" sortable="false" text="Port" />
               </columns>
                <columnResizePolicy>
                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

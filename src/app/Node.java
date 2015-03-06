@@ -2,6 +2,11 @@ package app;
 
 import communicator.MessageCallback;
 import communicator.Server;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 import java.util.ArrayList;
 
 /**
@@ -35,10 +40,20 @@ public class Node {
         return myIp;
     }
 
+    public StringProperty userNameProperty(){
+        return new SimpleStringProperty(myUsername);
+    }
+
+    public StringProperty ipProperty(){
+        return new SimpleStringProperty(myIp);
+    }
+
+    public StringProperty portProperty(){
+        return new SimpleStringProperty(Integer.toString(myDefaultPort));
+    }
 
     // Add node's file list
     public void addFileList(ArrayList<String> fileList) {
-
         files = fileList;
     }
 
