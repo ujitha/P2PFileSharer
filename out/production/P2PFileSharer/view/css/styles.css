@@ -7,7 +7,7 @@
 }
 
 .gray-pane{
-    -fx-background-color: linear-gradient(#fafafa 0%, #c4c4c4 50%, #b1b4b5 100%)
+    -fx-background-color: linear-gradient(#fafafa 0%, #c4c4c4 25%, #b1b4b5 50%,#c4c4c4 75%,#fafafa 100%);
 }
 
 .bordered-pane{
@@ -52,7 +52,7 @@
 
 .red-button{
     -fx-background-color:
-    #006600,
+    #660000,
     linear-gradient(#990000 0%, #990033 20%, #660000 100%),
     linear-gradient(#990033, #660000),
     radial-gradient(center 50% 0%, radius 100%, rgba(138,70,83,0.9), rgba(255,255,255,0));
@@ -66,7 +66,7 @@
 
 .red-button:hover{
     -fx-background-color:
-    #006600,
+    #660000,
     linear-gradient(#660000 0%, #990033 20%, #990000 100%),
     linear-gradient(#660000, #990033),
     radial-gradient(center 50% 0%, radius 100%, rgba(138,70,83,0.9), rgba(255,255,255,0));
@@ -74,9 +74,39 @@
 
 .red-button:pressed{
     -fx-background-color:
-    #006600,
+    #660000,
     linear-gradient(#880000 0%, #880022 20%, #550000 100%),
     linear-gradient(#880022, #550000),
     radial-gradient(center 50% 0%, radius 100%, rgba(145,145,92,0.9), rgba(255,255,255,0));
+}
+
+.blue-button{
+    -fx-background-color:
+    #000066,
+    linear-gradient(#000099 0%, #003399 20%, #000066 100%),
+    linear-gradient(#003399, #000066),
+    radial-gradient(center 50% 0%, radius 100%, rgba(70,83,138,0.9), rgba(255,255,255,0));
+    -fx-background-radius: 5,4,3,5;
+    -fx-background-insets: 0,1,2,0;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
+    -fx-text-fill: linear-gradient(white, #d0d0d0);
+    -fx-padding: 10 20 10 20;
+}
+
+.blue-button:hover{
+    -fx-background-color:
+    #000066,
+    linear-gradient(#000066 0%, #003399 20%, #000099 100%),
+    linear-gradient(#000066, #003399),
+    radial-gradient(center 50% 0%, radius 100%, rgba(70,83,138,0.9), rgba(255,255,255,0));
+}
+
+.blue-button:pressed{
+    -fx-background-color:
+    #000066,
+    linear-gradient(#000088 0%, #002288 20%, #000055 100%),
+    linear-gradient(#002288, #000055),
+    radial-gradient(center 50% 0%, radius 100%, rgba(145,92,145,0.9), rgba(255,255,255,0));
 }
 

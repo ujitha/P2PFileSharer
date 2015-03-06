@@ -93,6 +93,7 @@ public class DSManager {
             @Override
             public void receiveMessage(String message) {
 
+                controller.writeToLog(message);
                 MessageDecoder msDecoder = new MessageDecoder();
                 Message incomingMsg = msDecoder.decodeMessage(message);
 
@@ -219,6 +220,16 @@ public class DSManager {
                         }
                     }
 
+                }else if(incomingMsg instanceof AckJoin)
+                {
+                    AckJoin ackJoin = (AckJoin) incomingMsg;
+                    controller.writeToLog(ackJoin.toString());
+                  //  AckJoin ackJoin = (AckJoin) incomingMsg;
+                   // if (ackJoin.getValue() == 9999) {
+                        //to change to get ip from meta data
+                   // }
+
+
                 }
 
 
@@ -313,20 +324,19 @@ public class DSManager {
             String nodePort = Integer.toString(connectedNodeList.get(i).getMyDefaultPort());
             String nodeUserName = connectedNodeList.get(i).getMyUsername();
 
-            Message joinMsg = new Join(nodeIp, nodePort, nodeUserName);
+            Message joinMsg = new Join(node.getMyIp(), Integer.toString(node.getMyDefaultPort()), node.getMyUsername());
             UDPClient messageClient = new UDPClient();
 
-
-                String receivedMessage = messageClient.sendMessage(nodeIp, Integer.parseInt(nodePort), joinMsg);
-                MessageDecoder messageDecoder = new MessageDecoder();
-                Message message = messageDecoder.decodeMessage(receivedMessage);
-
-                if (message instanceof AckJoin) {
-                    AckJoin ackJoin = (AckJoin) message;
-                    if (ackJoin.getValue() == 9999) {
-                        connectedNodeList.remove(i);
-                    }
-                }
+            messageClient.sendMessage(nodeIp, Integer.parseInt(nodePort), joinMsg);
+//                MessageDecoder messageDecoder = new MessageDecoder();
+//                Message message = messageDecoder.decodeMessage(receivedMessage);
+//
+//                if (message instanceof AckJoin) {
+//                    AckJoin ackJoin = (AckJoin) message;
+//                    if (ackJoin.getValue() == 9999) {
+//                        connectedNodeList.remove(i);
+//                    }
+//                }
 
 
                 for (int j = 0; j <connectedNodeList.size() ; j++) {

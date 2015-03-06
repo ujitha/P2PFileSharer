@@ -33,6 +33,7 @@ public class UDPserver extends Thread {
                 serverSocket.receive(receivePacket);
                 String sentence = new String( receivePacket.getData());
                 System.out.println("RECEIVED: " + sentence);
+
                 messageCallback.receiveMessage(sentence);
             }
         } catch (SocketException e) {
