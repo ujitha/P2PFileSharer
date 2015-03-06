@@ -66,8 +66,10 @@ public class AckSearch extends Message{
     public String toString() {
         /*length SEROK no_files IP port hops filename1 filename2 ... ...*/
         String msg=" SEROK "+noOfFiles+" "+ip+" "+port+" "+" "+hops;
-        for(String filename:fileNames){
-            msg=msg+" "+filename;
+        if(fileNames!=null) {
+            for (String filename : fileNames) {
+                msg = msg + " " + filename;
+            }
         }
         msg=String.format("%04d",msg.length()+4)+msg;
         return msg;
