@@ -18,6 +18,8 @@ import communicator.messages.register.AckRegister;
 import communicator.messages.register.Register;
 import communicator.messages.search.AckSearch;
 import communicator.messages.search.Search;
+import javafx.application.Platform;
+import view.FSViewController;
 
 import java.io.IOException;
 import java.util.*;
@@ -39,11 +41,13 @@ public class DSManager {
     private int TOTAL_HOP_COUNT = 8;
     private boolean isTimerOn = false;
     private HashMap<String, String[]> queryResults;
+    private FSViewController controller;
 
 
-    public DSManager(String bootStrapIp, int bootStrapPort, String myIp) {
+    public DSManager(String bootStrapIp, int bootStrapPort, String myIp, FSViewController controller) {
         this.bootStrapIp = bootStrapIp;
         this.bootStrapPort = bootStrapPort;
+        this.controller = controller;
 
         String username = "user:" + myIp;
         node = new Node(myIp, MY_DEFAUILT_PORT, username);
@@ -52,11 +56,12 @@ public class DSManager {
         this.connectedNodeList = new ArrayList<Node>();
     }
 
-    public DSManager(String bootStrapIp, int bootStrapPort, String myIp, int myPort) {
+    public DSManager(String bootStrapIp, int bootStrapPort, String myIp, int myPort, FSViewController controller) {
         this.bootStrapIp = bootStrapIp;
         this.bootStrapPort = bootStrapPort;
+        this.controller = controller;
 
-        String username = "user:" + myIp;
+        String username = "user:" + myIp+myPort;
         node = new Node(myIp, myPort, username);
         fileRepo = new FileRepo();
         addFilesToNode();
@@ -80,10 +85,13 @@ public class DSManager {
 
     }
 
+    public ArrayList<String> getNodeFileList(){
+        return this.node.getFiles();
+    }
+
     // call from UI to connect
     public String start() {
 
-        String connectResult = this.connectToBS();
 
         server = new Server(node.getMyIp(), node.getMyDefaultPort(), new MessageCallback() {
             @Override
@@ -231,6 +239,7 @@ public class DSManager {
             }
         });
 
+        String connectResult = this.connectToBS();
         return connectResult;
 
     }
@@ -287,7 +296,7 @@ public class DSManager {
                                 connectedNodeList.add(node2);
                             }
                         }
-                        errorValue = "Successfull";
+                        errorValue = "Successful";
                         break;
                 }
 
@@ -357,8 +366,8 @@ public class DSManager {
             int nodeSize = connectedNodeList.size();
             int nodeCount = 2;       // select two nodes to send
 
-            if (nodeSize == 1) {
-                nodeCount = 1;
+            if (nodeSize < 2) {
+                nodeCount = nodeSize;
             }
 
             ArrayList<Integer> sentNodes = new ArrayList<Integer>();
@@ -391,16 +400,30 @@ public class DSManager {
 
             }
 
-            Timer timer = new Timer();
             queryResults = new HashMap<String, String[]>();
-            timer.schedule(new SendResultsTimer(), TIMER_SECONDS * 1000);
+            if(nodeCount>0)
+            {
+                Timer timer = new Timer();
+
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        timer.schedule(new SendResultsTimer(), TIMER_SECONDS * 1000);
+                    }
+                });
+            }
+            else
+            {
+                controller.showSearchResults(queryResults);
+            }
+
 
         } else {
 
             queryResults = new HashMap<String, String[]>();
             queryResults.put("ThisNode", results.toArray(new String[results.size()]));
 
-            // call the ui method to return results;
+            controller.showSearchResults(queryResults);
         }
 
     }
@@ -410,8 +433,7 @@ public class DSManager {
         @Override
         public void run() {
             isTimerOn = false;
-
-            //call ui to send data..
+            controller.showSearchResults(queryResults);
         }
     }
 

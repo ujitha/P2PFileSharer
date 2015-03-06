@@ -52,6 +52,10 @@ public class Node {
         return new SimpleStringProperty(Integer.toString(myDefaultPort));
     }
 
+    public ArrayList<String> getFiles() {
+        return files;
+    }
+
     // Add node's file list
     public void addFileList(ArrayList<String> fileList) {
         files = fileList;
