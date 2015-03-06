@@ -1,76 +1,38 @@
 package app;
 
 import communicator.MessageCallback;
-import communicator.MessageClient;
 import communicator.Server;
-import communicator.messages.Message;
-import communicator.messages.MessageDecoder;
-import communicator.messages.register.AckRegister;
-import communicator.messages.register.Register;
-
-import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Created by ujitha on 3/5/15.
  */
 public class Node {
-    private String BSip;
-    private int BSport;
-    private List<String> connectedNodeList;
 
     private String myIp;
     private int myDefaultPort;
     private String myUsername;
 
-    public Node(String BSip,int BSport,String myIp,int myDefaultPort,String myUsername){
-        this.BSip=BSip;
-        this.BSport=BSport;
+    public Node(String myIp,int myDefaultPort,String myUsername){
+
         this.myIp=myIp;
         this.myDefaultPort=myDefaultPort;
         this.myUsername=myUsername;
-        connectedNodeList=new LinkedList<String>();
-    }
-
-    public void start(){
-       this.connectToBS();
-       Server server=new Server(myIp,myDefaultPort,new MessageCallback() {
-            @Override
-            public void receiveMessage(String message) {
-
-            }
-       });
-
-       server.start();
 
     }
 
-    private void connectToBS(){
-        Message registerMsg=new Register(myIp,Integer.toString(myDefaultPort),myUsername);
-        MessageClient messageClient=new MessageClient();
-
-        try {
-            String receivedMessage=messageClient.sendMessage(BSip,BSport,registerMsg);
-            MessageDecoder messageDecoder=new MessageDecoder();
-            Message message=messageDecoder.decodeMessage(receivedMessage);
-
-            if(message instanceof AckRegister){
-                AckRegister ackRegister=(AckRegister)message;
-                if(ackRegister.getNoNodes()>0){
-                    String connectedNode=ackRegister.getIp1()+":"+ackRegister.getPort1();
-                    connectedNodeList.add(connectedNode);
-                    if(ackRegister.getNoNodes()==2){
-                        String connectedNode2=ackRegister.getIp2()+":"+ackRegister.getPort2();
-                        connectedNodeList.add(connectedNode2);
-                    }
-                }
-            }
-      
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public int getMyDefaultPort() {
+        return myDefaultPort;
     }
+
+    public String getMyUsername() {
+        return myUsername;
+    }
+
+    public String getMyIp() {
+        return myIp;
+    }
+
 
     // Add node's file list
     public void addFileList(ArrayList<String> fileList) {

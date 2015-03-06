@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package p2pfilesharer;
+package app;
 
 import java.util.ArrayList;
 import java.util.Random;
