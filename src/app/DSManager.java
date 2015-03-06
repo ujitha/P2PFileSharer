@@ -10,6 +10,8 @@ import communicator.MessageClient;
 import communicator.Server;
 import communicator.messages.Message;
 import communicator.messages.MessageDecoder;
+import communicator.messages.join.AckJoin;
+import communicator.messages.join.Join;
 import communicator.messages.register.AckRegister;
 import communicator.messages.register.Register;
 
@@ -62,6 +64,35 @@ public class DSManager {
             @Override
             public void receiveMessage(String message) {
 
+                MessageDecoder msDecoder=new MessageDecoder();
+                Message incomingMsg = msDecoder.decodeMessage(message);
+
+                if(incomingMsg instanceof Join)
+                {
+                   Join joinNode=(Join)incomingMsg;
+                    String ip = joinNode.getIp();
+                    String port = joinNode.getPort();
+                    String userName = "username";
+                    Node node=new Node(ip,Integer.parseInt(port),userName);
+                    boolean insertInTable = addNodeToList(node);
+                    int resValue=0;
+                    if(insertInTable)
+                    {
+                        resValue = 9999;
+                    }
+
+
+                    Message joinAck=new AckJoin(resValue);
+                    MessageClient messageClient=new MessageClient();
+                    try {
+                        messageClient.sendMessage(ip,Integer.parseInt(port),joinAck);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+
+                }
+
             }
         });
 
@@ -69,7 +100,23 @@ public class DSManager {
 
     }
 
-    private void connectToBS(){
+    private boolean addNodeToList(Node node)
+    {
+        boolean hasNode=false;
+        for (int i = 0; i < connectedNodeList.size(); i++) {
+
+            if(connectedNodeList.get(i).getMyIp().equals(node.getMyIp()))
+            {
+                hasNode=true;
+                break;
+            }
+        }
+
+        return hasNode;
+
+    }
+
+        private void connectToBS(){
         Message registerMsg=new Register(node.getMyIp(),Integer.toString(node.getMyDefaultPort()),node.getMyUsername());
         MessageClient messageClient=new MessageClient();
 

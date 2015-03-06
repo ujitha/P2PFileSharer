@@ -39,7 +39,7 @@ public class FileRepo {
         "Happy Feet", "Modern Family", "American Idol", "Hacking for Dummies", "Lord of the rings", "Rings"};
 
     public FileRepo() {
-        files = new ArrayList<>();
+        files = new ArrayList<String>();
         addFiles();
     }
 
@@ -64,7 +64,7 @@ public class FileRepo {
         int noOfFiles = randomGenerator.nextInt(high - low) + low;
         ArrayList<String> returnFiles = new ArrayList<String>();
 
-        ArrayList<Integer> fileNodes = new ArrayList<>();
+        ArrayList<Integer> fileNodes = new ArrayList<Integer>();
 
         while (noOfFiles > 0) {
 

@@ -12,12 +12,14 @@ public class Node {
     private String myIp;
     private int myDefaultPort;
     private String myUsername;
+    private ArrayList<String> files;
 
     public Node(String myIp,int myDefaultPort,String myUsername){
 
         this.myIp=myIp;
         this.myDefaultPort=myDefaultPort;
         this.myUsername=myUsername;
+        this.files = new ArrayList<String>();
 
     }
 
@@ -43,7 +45,7 @@ public class Node {
     // check the file from node's file List
     public ArrayList<String> isFileInRepo(String fileName) {
 
-        ArrayList<String> fileList = new ArrayList<>();
+        ArrayList<String> fileList = new ArrayList<String>();
 
         for (int i = 0; i < files.size(); i++) {
 
