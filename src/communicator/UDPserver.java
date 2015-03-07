@@ -28,7 +28,9 @@ public class UDPserver extends Thread {
             byte[] receiveData = new byte[1024];
             byte[] sendData = new byte[1024];
             while (true){
-
+                if(serverSocket.isClosed()){
+                    break;
+                }
                 DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
                 serverSocket.receive(receivePacket);
                 String sentence = new String( receivePacket.getData());
@@ -41,7 +43,15 @@ public class UDPserver extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
 
+    public void closeSocket(){
+        serverSocket.close();
+        try {
+            this.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
 //    public static void main(String[] args){

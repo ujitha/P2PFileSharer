@@ -40,6 +40,7 @@ public class DSManager {
     private boolean isTimerOn = false;
     private HashMap<String, String[]> queryResults;
     private FSViewController controller;
+    private Timer searchTimer;
 
     // Constructor for having default port number
     public DSManager(String bootStrapIp, int bootStrapPort, String myIp, FSViewController controller) {
@@ -89,7 +90,7 @@ public class DSManager {
             udpClient.sendMessage(nodeIp, Integer.parseInt(nodePort), leaveMsg);
 
         }
-
+        server.closeSocket();
     }
 
     // Returns node's file list
@@ -134,12 +135,15 @@ public class DSManager {
 
                     if (isTimerOn) {
                         int ackValue = searchAck.getNoOfFiles();
+                        stopTimer();
 
                         if (ackValue > 0) {
                             String ip = searchAck.getIp();
                             String[] results = searchAck.getFileNames();
                             queryResults.put(ip, results);
                         }
+
+                        startTimer();
                     }
 
                 } else if (incomingMsg instanceof AckJoin) {
@@ -420,15 +424,9 @@ public class DSManager {
             }
 
             queryResults = new HashMap<String, String[]>();
-            if (nodeCount > 0) {
-                Timer timer = new Timer();
-
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        timer.schedule(new SendResultsTimer(), TIMER_SECONDS * 1000);
-                    }
-                });
+            if (nodeSize > 0) {
+                isTimerOn = true;
+                startTimer();
             } else {
                 controller.showSearchResults(queryResults);
             }
@@ -444,13 +442,22 @@ public class DSManager {
 
     }
 
-    class SendResultsTimer extends TimerTask {
+    private void startTimer(){
+        searchTimer = new Timer();
 
-        @Override
-        public void run() {
-            isTimerOn = false;
-            controller.showSearchResults(queryResults);
-        }
+        searchTimer.schedule(new TimerTask() {
+            public void run() {
+                Platform.runLater(new Runnable() {
+                    public void run() {
+                        isTimerOn = false;
+                        controller.showSearchResults(queryResults);
+                    }
+                });
+            }
+        }, TIMER_SECONDS*1000);
     }
 
+    private void stopTimer(){
+        searchTimer.cancel();
+    }
 }

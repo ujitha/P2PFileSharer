@@ -214,7 +214,7 @@ public class FSViewController implements Initializable {
         return false;
     }
 
-    private boolean disconnectFromNetwork() {
+    public boolean disconnectFromNetwork() {
         dsManager.sendLeaveMessages();
         connected = false;
         return true;

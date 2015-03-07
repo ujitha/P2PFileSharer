@@ -4,11 +4,13 @@ package view;
  */
 
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -26,7 +28,16 @@ public class FileSharer extends Application {
     public void start(Stage primaryStage) {
         Parent root = null;
         try {
-            root = FXMLLoader.load(getClass().getResource("FSView.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource("FSView.fxml"));
+            root = fxmlLoader.load();
+            final FSViewController fsCtrl = fxmlLoader.getController();
+            primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                @Override
+                public void handle(WindowEvent event) {
+                    boolean b = fsCtrl.disconnectFromNetwork();
+                }
+            });
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -36,6 +47,9 @@ public class FileSharer extends Application {
         primaryStage.setMinHeight(600);
         primaryStage.getIcons().add(new Image(FileSharer.class.getResourceAsStream("images/icon.png")));
         primaryStage.setScene(scene);
+
+
+
         primaryStage.show();
+        }
     }
-}
