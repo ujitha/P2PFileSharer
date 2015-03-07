@@ -195,6 +195,11 @@ public class DSManager {
         String fileName = searchMsg.getFileName();
         ArrayList<String> results = getNodeQueryResults(fileName);
 
+        //if the search request is sent by myself, ignore it
+        if(ip.equals(node.getMyIp()) && port.equals(Integer.toString(node.getMyDefaultPort()))){
+            return;
+        }
+
         if (!results.isEmpty()) {
 
             Message searchAck = new AckSearch(results.size(), node.getMyIp(), Integer.toString(node.getMyDefaultPort()), TOTAL_HOP_COUNT - hopSize, results.toArray(new String[results.size()]));
@@ -396,6 +401,13 @@ public class DSManager {
             nodeCount = nodeSize;
         }
 
+        if (nodeSize > 0) {
+            isTimerOn = true;
+            startTimer();
+        } else {
+            controller.showSearchResults(queryResults);
+        }
+
         ArrayList<Integer> sentNodes = new ArrayList<Integer>();
 
         while (nodeCount > 0) {
@@ -419,12 +431,7 @@ public class DSManager {
             }
         }
 
-        if (nodeSize > 0) {
-            isTimerOn = true;
-            startTimer();
-        } else {
-            controller.showSearchResults(queryResults);
-        }
+
 
     }
 
