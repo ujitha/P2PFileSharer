@@ -14,6 +14,7 @@ import communicator.messages.leave.AckLeave;
 import communicator.messages.leave.Leave;
 import communicator.messages.register.AckRegister;
 import communicator.messages.register.Register;
+import communicator.messages.register.Unregister;
 import communicator.messages.search.AckSearch;
 import communicator.messages.search.Search;
 import javafx.application.Platform;
@@ -70,7 +71,7 @@ public class DSManager {
     // Calls from UI when leaving the network to inform other nodes
     public void sendLeaveMessages() {
 
-        Message leaveMessage = new Leave(node.getMyIp(), Integer.toString(node.getMyDefaultPort()));
+        Message leaveMessage = new Unregister(node.getMyIp(), Integer.toString(node.getMyDefaultPort()),node.getMyUsername());
         MessageClient messageClient = new MessageClient();
 
         try {

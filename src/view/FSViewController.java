@@ -68,6 +68,7 @@ public class FSViewController implements Initializable {
     private LogWindowController logCtrl;
     private ObservableList<Node> neighbours;
     private DSManager dsManager;
+    private String lastQuery = "";
 
 
     @Override
@@ -178,6 +179,7 @@ public class FSViewController implements Initializable {
             searchBtn.setDisable(true);
             searchTF.setDisable(true);
             String fileName = searchTF.getText();
+            lastQuery = fileName;
             dsManager.getQueryResults(fileName);
         });
 
@@ -232,24 +234,14 @@ public class FSViewController implements Initializable {
 
     public void showSearchResults(HashMap<String, String[]> results) {
         if(results.isEmpty()){
-            writeToLog("No files found!");
+            popupCreator.showInfoDialog("No files found", "No files matching \'"+lastQuery+"\' found!");
         }
         else {
-            Set<String> ips = results.keySet();
-
-            for (String k : ips) {
-                String[] res = results.get(k);
-                for (String s : res) {
-                    writeToLog(k + "--" + s);
-                }
-            }
-            //            //popup to show file list
-//            popupCreator.showSearchResults(fileName, new String[0]);
-//
-            searchBtn.setText("Search File");
-            searchTF.setDisable(false);
-            searchBtn.setDisable(false);
+            popupCreator.showSearchResults(lastQuery, results);
         }
+        searchBtn.setText("Search File");
+        searchTF.setDisable(false);
+        searchBtn.setDisable(false);
     }
 
     private void clearInputs() {

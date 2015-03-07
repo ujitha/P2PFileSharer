@@ -10,11 +10,15 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
+import javax.swing.*;
 import java.io.IOException;
 
 public class FileSharer extends Application {
 
+    public static String JAVA_VERSION;
+
     public static void main(String[] args) {
+        FileSharer.JAVA_VERSION = System.getProperty("java.version");
         launch(args);
     }
 
