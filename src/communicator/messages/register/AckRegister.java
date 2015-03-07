@@ -120,7 +120,7 @@ public class AckRegister extends Message {
 
     @Override
     public void decodeMessage(String message) {
-        String[] s=message.split(" ");
+        String[] s=splitMessage(message);
         this.noNodes=Integer.parseInt(s[2]);
         if(noNodes>=1 && noNodes<9996){
             ip1=s[3];

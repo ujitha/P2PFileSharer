@@ -47,8 +47,7 @@ public class AckJoin extends Message{
 
     @Override
     public void decodeMessage(String message) {
-        message=message.trim();
-        String s=message.split(" ")[2];
-        this.value=Integer.parseInt(s);
+        String[] s=splitMessage(message);
+        this.value=Integer.parseInt(s[2]);
     }
 }

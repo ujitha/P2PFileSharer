@@ -33,7 +33,7 @@ public class Error extends Message {
 
     @Override
     public void decodeMessage(String message) {
-        String[] s=message.split(" ");
+        String[] s=splitMessage(message);
         if(s.length>2) {
             int index=message.indexOf(s[1]);
             this.error = message.substring(1+index+s[1].length());

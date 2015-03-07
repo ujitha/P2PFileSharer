@@ -44,7 +44,7 @@ public class AckLeave extends Message {
 
     @Override
     public void decodeMessage(String message) {
-        String s=message.split(" ")[2];
+        String s=splitMessage(message)[2];
         this.value=Integer.parseInt(s);
     }
 }

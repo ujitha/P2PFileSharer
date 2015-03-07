@@ -64,7 +64,7 @@ public class Register extends Message{
 
     @Override
     public void decodeMessage(String message) {
-        String[] s=message.split(" ");
+        String[] s=splitMessage(message);
         this.ipAddress=s[2];
         this.port=s[3];
         this.userName=s[4];

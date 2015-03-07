@@ -108,10 +108,7 @@ public class AckSearch extends Message{
 
     @Override
     public void decodeMessage(String message) {
-        message=message.trim();
-        this.setLength(Integer.parseInt(message.split(" ")[0]));
-        message=message.substring(0,this.getLength());
-        String[] s=message.split(" ");
+        String[] s=splitMessage(message);
         this.noOfFiles=Integer.parseInt(s[2]);
         this.ip=s[3];
         this.port=s[4];
