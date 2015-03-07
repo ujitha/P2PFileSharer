@@ -108,6 +108,9 @@ public class AckSearch extends Message{
 
     @Override
     public void decodeMessage(String message) {
+        message=message.trim();
+        this.setLength(Integer.parseInt(message.split(" ")[0]));
+        message=message.substring(0,this.getLength());
         String[] s=message.split(" ");
         this.noOfFiles=Integer.parseInt(s[2]);
         this.ip=s[3];
@@ -117,11 +120,12 @@ public class AckSearch extends Message{
         Pattern pattern = Pattern.compile("\"(.*?)\"");
         Matcher matcher = pattern.matcher(message);
         int i=0;
-        fileNames=new String[noOfFiles];
-        while (matcher.find())
-        {
-            fileNames[i]=matcher.group(1);
-            i++;
+        if(noOfFiles!=0) {
+            fileNames = new String[noOfFiles];
+            while (matcher.find()) {
+                fileNames[i] = matcher.group(1);
+                i++;
+            }
         }
 
     }
