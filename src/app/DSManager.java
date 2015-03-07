@@ -27,7 +27,6 @@ import java.util.*;
  */
 public class DSManager {
 
-
     public String bootStrapIp;
     public int bootStrapPort;
     public Node node;
@@ -41,7 +40,7 @@ public class DSManager {
     private HashMap<String, String[]> queryResults;
     private FSViewController controller;
 
-
+    // Constructor for having default port number
     public DSManager(String bootStrapIp, int bootStrapPort, String myIp, FSViewController controller) {
         this.bootStrapIp = bootStrapIp;
         this.bootStrapPort = bootStrapPort;
@@ -54,40 +53,51 @@ public class DSManager {
         this.connectedNodeList = new ArrayList<Node>();
     }
 
+    // Constructor for having an overriding port number
     public DSManager(String bootStrapIp, int bootStrapPort, String myIp, int myPort, FSViewController controller) {
         this.bootStrapIp = bootStrapIp;
         this.bootStrapPort = bootStrapPort;
         this.controller = controller;
 
-        String username = "user:" + myIp+myPort;
-        username=username.substring(username.length()-7,username.length());
+        String username = "user:" + myIp + myPort;
+        username = username.substring(username.length() - 7, username.length());
         node = new Node(myIp, myPort, username);
         fileRepo = new FileRepo();
         addFilesToNode();
         this.connectedNodeList = new ArrayList<Node>();
     }
 
-    // calls from UI when leaving the network to inform other nodes
+    // Calls from UI when leaving the network to inform other nodes
     public void sendLeaveMessages() {
+
+        Message leaveMessage = new Leave(node.getMyIp(), Integer.toString(node.getMyDefaultPort()));
+        MessageClient messageClient = new MessageClient();
+
+        try {
+            messageClient.sendMessage(bootStrapIp, bootStrapPort, leaveMessage);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         for (int i = 0; i < connectedNodeList.size(); i++) {
 
             String nodeIp = connectedNodeList.get(i).getMyIp();
             String nodePort = Integer.toString(connectedNodeList.get(i).getMyDefaultPort());
-            Message leaveMsg = new Leave(nodeIp, nodePort);
-            UDPClient messageClient = new UDPClient();
-             messageClient.sendMessage(nodeIp, Integer.parseInt(nodePort), leaveMsg);
+            Message leaveMsg = new Leave(node.getMyIp(), Integer.toString(node.getMyDefaultPort()));
+            UDPClient udpClient = new UDPClient();
+            udpClient.sendMessage(nodeIp, Integer.parseInt(nodePort), leaveMsg);
 
         }
 
     }
 
-    public ArrayList<String> getNodeFileList(){
+    // Returns node's file list
+    public ArrayList<String> getNodeFileList() {
         return this.node.getFiles();
     }
 
-    // call from UI to connect
+    // Call from UI to connect
     public String start() {
-
 
         server = new UDPserver(node.getMyIp(), node.getMyDefaultPort(), new MessageCallback() {
             @Override
@@ -99,24 +109,9 @@ public class DSManager {
 
                 if (incomingMsg instanceof Join) {
                     Join joinNode = (Join) incomingMsg;
-                    String ip = joinNode.getIp();
-                    String port = joinNode.getPort();
-                    String userName = joinNode.getUserName();
-                    Node node = new Node(ip, Integer.parseInt(port), userName);
-                    boolean insertInTable = addNodeToList(node);
-                    int resValue = 0;
-                    if (insertInTable) {
-                        resValue = 9999;
-                    }
-
-                    Message joinAck = new AckJoin(resValue);
-                    UDPClient messageClient = new UDPClient();
-
-                     messageClient.sendMessage(ip, Integer.parseInt(port), joinAck);
-
+                    processJoinMsg(joinNode);
 
                 } else if (incomingMsg instanceof AckLeave) {
-
                     AckLeave leaveMsg = (AckLeave) incomingMsg;
                     int leaveValue = leaveMsg.getValue();
                     if (leaveValue == 0) {
@@ -125,87 +120,13 @@ public class DSManager {
                         // not ok to leave
                     }
                 } else if (incomingMsg instanceof Leave) {
-
                     Leave leaveMsg = (Leave) incomingMsg;
-                    String nodeIp = leaveMsg.getIpAddress();
-                    String nodePort = leaveMsg.getPort();
-                    boolean leaveOk = false;
-                    int leaveValue = 9999;
-
-                    for (int i = 0; i < connectedNodeList.size(); i++) {
-
-                        if (connectedNodeList.get(i).getMyIp().equals(nodeIp)) {
-                            leaveOk = true;
-                            leaveValue = 0;
-                            connectedNodeList.remove(i);
-                            break;
-                        }
-                    }
-
-                    Message leaveAck = new AckLeave(leaveValue);
-                    UDPClient messageClient = new UDPClient();
-
-                        messageClient.sendMessage(nodeIp, Integer.parseInt(nodePort), leaveAck);
+                    processLeaveMsg(leaveMsg);
 
                 } else if (incomingMsg instanceof Search) {
-
                     Search searchMsg = (Search) incomingMsg;
-                    int hopSize = searchMsg.getHops();
-                    String ip = searchMsg.getIp();
-                    String port = searchMsg.getPort();
-                    String fileName = searchMsg.getFileName();
-                    ArrayList<String> results = getNodeQueryResults(fileName);
+                    processSearchMsg(searchMsg);
 
-                    if (!results.isEmpty()) {
-
-                        Message searchAck = new AckSearch(results.size(), node.getMyIp(), Integer.toString(node.getMyDefaultPort()), TOTAL_HOP_COUNT - hopSize, results.toArray(new String[results.size()]));
-                        UDPClient messageClient = new UDPClient();
-
-                            messageClient.sendMessage(ip, Integer.parseInt(port), searchAck);
-
-                    } else {
-
-                        if (hopSize == 0) {
-                            Message searchAck = new AckSearch(0, node.getMyIp(), Integer.toString(node.getMyDefaultPort()), TOTAL_HOP_COUNT - hopSize, results.toArray(new String[results.size()]));
-                            UDPClient messageClient = new UDPClient();
-
-                                messageClient.sendMessage(ip, Integer.parseInt(port), searchAck);
-
-                        } else {
-                            Random random = new Random();
-                            int nodeSize = connectedNodeList.size();
-                            int nodeCount = 2;       // select two nodes to send
-
-                            if (nodeSize == 1) {
-                                nodeCount = 1;
-                            }
-
-                            ArrayList<Integer> sentNodes = new ArrayList<Integer>();
-
-                            while (nodeCount > 0) {
-                                int nodeId = random.nextInt(nodeSize);
-                                boolean hasId = false;
-                                for (int i = 0; i < sentNodes.size(); i++) {
-
-                                    if (nodeId == sentNodes.get(i)) {
-                                        hasId = true;
-                                        break;
-                                    }
-                                }
-
-                                if (!hasId) {
-                                    String nodeIp = connectedNodeList.get(nodeId).getMyIp();
-                                    int nodePort = connectedNodeList.get(nodeId).getMyDefaultPort();
-                                    searchMsg.reduceHopCount();
-                                    UDPClient messageClient = new UDPClient();
-
-                                        messageClient.sendMessage(nodeIp, nodePort, searchMsg);
-
-                                    nodeCount--;
-                                }
-                            }
-                        }
-                    }
                 } else if (incomingMsg instanceof AckSearch) {
 
                     AckSearch searchAck = (AckSearch) incomingMsg;
@@ -220,14 +141,14 @@ public class DSManager {
                         }
                     }
 
-                }else if(incomingMsg instanceof AckJoin)
-                {
+                } else if (incomingMsg instanceof AckJoin) {
                     AckJoin ackJoin = (AckJoin) incomingMsg;
                     controller.writeToLog(ackJoin.toString());
-                  //  AckJoin ackJoin = (AckJoin) incomingMsg;
-                   // if (ackJoin.getValue() == 9999) {
-                        //to change to get ip from meta data
-                   // }
+                    //to change to get ip from meta data
+
+                    //  AckJoin ackJoin = (AckJoin) incomingMsg;
+                    // if (ackJoin.getValue() == 9999) {
+                    // }
 
 
                 }
@@ -241,6 +162,102 @@ public class DSManager {
 
     }
 
+    // Process Join Message
+    private void processJoinMsg(Join joinNode) {
+
+        String ip = joinNode.getIp();
+        String port = joinNode.getPort();
+        String userName = joinNode.getUserName();
+        Node node = new Node(ip, Integer.parseInt(port), userName);
+        boolean insertInTable = addNodeToList(node);
+        int resValue = 0;
+        if (insertInTable) {
+            resValue = 9999;
+        }
+
+        Message joinAck = new AckJoin(resValue);
+        UDPClient messageClient = new UDPClient();
+
+        messageClient.sendMessage(ip, Integer.parseInt(port), joinAck);
+    }
+
+    // Process Search Message
+    private void processSearchMsg(Search searchMsg) {
+
+        int hopSize = searchMsg.getHops();
+        String ip = searchMsg.getIp();
+        String port = searchMsg.getPort();
+        String fileName = searchMsg.getFileName();
+        ArrayList<String> results = getNodeQueryResults(fileName);
+
+        if (!results.isEmpty()) {
+
+            Message searchAck = new AckSearch(results.size(), node.getMyIp(), Integer.toString(node.getMyDefaultPort()), TOTAL_HOP_COUNT - hopSize, results.toArray(new String[results.size()]));
+            UDPClient messageClient = new UDPClient();
+            messageClient.sendMessage(ip, Integer.parseInt(port), searchAck);
+
+        } else {
+
+            if (hopSize == 0) {
+                Message searchAck = new AckSearch(0, node.getMyIp(), Integer.toString(node.getMyDefaultPort()), TOTAL_HOP_COUNT - hopSize, results.toArray(new String[results.size()]));
+                UDPClient messageClient = new UDPClient();
+                messageClient.sendMessage(ip, Integer.parseInt(port), searchAck);
+
+            } else {
+                Random random = new Random();
+                int nodeSize = connectedNodeList.size();
+                int nodeCount = 2;       // select two nodes to send
+                if (nodeSize == 1) {
+                    nodeCount = 1;
+                }
+
+                ArrayList<Integer> sentNodes = new ArrayList<Integer>();
+                while (nodeCount > 0) {
+                    int nodeId = random.nextInt(nodeSize);
+                    boolean hasId = false;
+                    for (int i = 0; i < sentNodes.size(); i++) {
+                        if (nodeId == sentNodes.get(i)) {
+                            hasId = true;
+                            break;
+                        }
+                    }
+
+                    if (!hasId) {
+                        String nodeIp = connectedNodeList.get(nodeId).getMyIp();
+                        int nodePort = connectedNodeList.get(nodeId).getMyDefaultPort();
+                        searchMsg.reduceHopCount();
+                        UDPClient messageClient = new UDPClient();
+                        messageClient.sendMessage(nodeIp, nodePort, searchMsg);
+                        nodeCount--;
+                    }
+                }
+            }
+        }
+    }
+
+    // Process Leave Message
+    private void processLeaveMsg(Leave leaveMsg) {
+
+        String nodeIp = leaveMsg.getIpAddress();
+        String nodePort = leaveMsg.getPort();
+        int leaveValue = 9999;
+
+        for (int i = 0; i < connectedNodeList.size(); i++) {
+
+            if (connectedNodeList.get(i).getMyIp().equals(nodeIp)) {
+                leaveValue = 0;
+                controller.removeNeighbour(connectedNodeList.get(i));
+                connectedNodeList.remove(i);
+                break;
+            }
+        }
+
+        Message leaveAck = new AckLeave(leaveValue);
+        UDPClient messageClient = new UDPClient();
+
+        messageClient.sendMessage(nodeIp, Integer.parseInt(nodePort), leaveAck);
+    }
+
     private boolean addNodeToList(Node node) {
         boolean hasNode = false;
         for (int i = 0; i < connectedNodeList.size(); i++) {
@@ -251,8 +268,7 @@ public class DSManager {
             }
         }
 
-        if(!hasNode)
-        {
+        if (!hasNode) {
             connectedNodeList.add(node);
             controller.addNeighbour(node);
         }
@@ -339,9 +355,9 @@ public class DSManager {
 //                }
 
 
-                for (int j = 0; j <connectedNodeList.size() ; j++) {
-                    controller.addNeighbour(connectedNodeList.get(i));
-                }
+            for (int j = 0; j < connectedNodeList.size(); j++) {
+                controller.addNeighbour(connectedNodeList.get(i));
+            }
 
 
         }
@@ -395,7 +411,7 @@ public class DSManager {
                     Message searchMsg = new Search(node.getMyIp(), Integer.toString(node.getMyDefaultPort()), query, TOTAL_HOP_COUNT);
                     UDPClient messageClient = new UDPClient();
 
-                        messageClient.sendMessage(nodeIp, nodePort, searchMsg);
+                    messageClient.sendMessage(nodeIp, nodePort, searchMsg);
 
                     nodeCount--;
                 }
@@ -403,8 +419,7 @@ public class DSManager {
             }
 
             queryResults = new HashMap<String, String[]>();
-            if(nodeCount>0)
-            {
+            if (nodeCount > 0) {
                 Timer timer = new Timer();
 
                 Platform.runLater(new Runnable() {
@@ -413,9 +428,7 @@ public class DSManager {
                         timer.schedule(new SendResultsTimer(), TIMER_SECONDS * 1000);
                     }
                 });
-            }
-            else
-            {
+            } else {
                 controller.showSearchResults(queryResults);
             }
 
