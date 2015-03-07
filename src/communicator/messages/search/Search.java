@@ -85,6 +85,7 @@ public class Search extends Message {
 
     @Override
     public void decodeMessage(String message) {
+        message=message.trim();
         String[] s=message.split(" ");
         this.ip=s[2];
         this.port=s[3];
