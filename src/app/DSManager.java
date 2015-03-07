@@ -72,7 +72,7 @@ public class DSManager {
     // Calls from UI when leaving the network to inform other nodes
     public void sendLeaveMessages() {
 
-        Message leaveMessage = new Unregister(node.getMyIp(), Integer.toString(node.getMyDefaultPort()),node.getMyUsername());
+        Message leaveMessage = new Unregister(node.getMyIp(), Integer.toString(node.getMyDefaultPort()), node.getMyUsername());
         MessageClient messageClient = new MessageClient();
 
         try {
@@ -373,76 +373,62 @@ public class DSManager {
         node.addFileList(fileRepo.getFilesFromRepo());
     }
 
-
     private ArrayList<String> getNodeQueryResults(String query) {
         return node.isFileInRepo(query);
     }
-
 
     // calls from ui to check from node's file list, otherwise send to other nodes
     public void getQueryResults(String query) {
 
         boolean hasFile = false;
         ArrayList<String> results = node.isFileInRepo(query);
+        queryResults = new HashMap<String, String[]>();
 
-        if (results.isEmpty()) {
-
-            Random random = new Random();
-            int nodeSize = connectedNodeList.size();
-            int nodeCount = 2;       // select two nodes to send
-
-            if (nodeSize < 2) {
-                nodeCount = nodeSize;
-            }
-
-            ArrayList<Integer> sentNodes = new ArrayList<Integer>();
-
-            while (nodeCount > 0) {
-                int nodeId = random.nextInt(nodeSize);
-                boolean hasId = false;
-                for (int i = 0; i < sentNodes.size(); i++) {
-
-                    if (nodeId == sentNodes.get(i)) {
-                        hasId = true;
-                        break;
-                    }
-                }
-
-                if (!hasId) {
-
-                    String nodeIp = connectedNodeList.get(nodeId).getMyIp();
-                    int nodePort = connectedNodeList.get(nodeId).getMyDefaultPort();
-
-                    Message searchMsg = new Search(node.getMyIp(), Integer.toString(node.getMyDefaultPort()), query, TOTAL_HOP_COUNT);
-                    UDPClient messageClient = new UDPClient();
-
-                    messageClient.sendMessage(nodeIp, nodePort, searchMsg);
-
-                    nodeCount--;
-                }
-
-            }
-
-            queryResults = new HashMap<String, String[]>();
-            if (nodeSize > 0) {
-                isTimerOn = true;
-                startTimer();
-            } else {
-                controller.showSearchResults(queryResults);
-            }
-
-
-        } else {
-
-            queryResults = new HashMap<String, String[]>();
+        if (!results.isEmpty()) {
             queryResults.put("ThisNode", results.toArray(new String[results.size()]));
+        }
 
+        Random random = new Random();
+        int nodeSize = connectedNodeList.size();
+        int nodeCount = 2;       // select two nodes to send
+
+        if (nodeSize < 2) {
+            nodeCount = nodeSize;
+        }
+
+        ArrayList<Integer> sentNodes = new ArrayList<Integer>();
+
+        while (nodeCount > 0) {
+            int nodeId = random.nextInt(nodeSize);
+            boolean hasId = false;
+            for (int i = 0; i < sentNodes.size(); i++) {
+
+                if (nodeId == sentNodes.get(i)) {
+                    hasId = true;
+                    break;
+                }
+            }
+
+            if (!hasId) {
+                String nodeIp = connectedNodeList.get(nodeId).getMyIp();
+                int nodePort = connectedNodeList.get(nodeId).getMyDefaultPort();
+                Message searchMsg = new Search(node.getMyIp(), Integer.toString(node.getMyDefaultPort()), query, TOTAL_HOP_COUNT);
+                UDPClient messageClient = new UDPClient();
+                messageClient.sendMessage(nodeIp, nodePort, searchMsg);
+                nodeCount--;
+            }
+        }
+
+        if (nodeSize > 0) {
+            isTimerOn = true;
+            startTimer();
+        } else {
             controller.showSearchResults(queryResults);
         }
 
     }
 
-    private void startTimer(){
+    private void startTimer() {
         searchTimer = new Timer();
 
         searchTimer.schedule(new TimerTask() {
@@ -454,10 +440,10 @@ public class DSManager {
                     }
                 });
             }
-        }, TIMER_SECONDS*1000);
+        }, TIMER_SECONDS * 1000);
     }
 
-    private void stopTimer(){
+    private void stopTimer() {
         searchTimer.cancel();
     }
 }
