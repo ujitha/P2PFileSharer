@@ -72,11 +72,11 @@ public class DSManager {
     // Calls from UI when leaving the network to inform other nodes
     public void sendLeaveMessages() {
 
-        Message leaveMessage = new Unregister(node.getMyIp(), Integer.toString(node.getMyDefaultPort()), node.getMyUsername());
+        Message unregMessage = new Unregister(node.getMyIp(), Integer.toString(node.getMyDefaultPort()), node.getMyUsername());
         MessageClient messageClient = new MessageClient();
 
         try {
-            messageClient.sendMessage(bootStrapIp, bootStrapPort, leaveMessage);
+            messageClient.sendMessage(bootStrapIp, bootStrapPort, unregMessage);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -253,8 +253,8 @@ public class DSManager {
         int leaveValue = 9999;
 
         for (int i = 0; i < connectedNodeList.size(); i++) {
-
-            if (connectedNodeList.get(i).getMyIp().equals(nodeIp)) {
+            Node n = connectedNodeList.get(i);
+            if ((n.getMyIp().equals(nodeIp))&&(n.getMyDefaultPort()==Integer.parseInt(nodePort))) {
                 leaveValue = 0;
                 controller.removeNeighbour(connectedNodeList.get(i));
                 connectedNodeList.remove(i);
@@ -271,8 +271,8 @@ public class DSManager {
     private boolean addNodeToList(Node node) {
         boolean hasNode = false;
         for (int i = 0; i < connectedNodeList.size(); i++) {
-
-            if (connectedNodeList.get(i).getMyIp().equals(node.getMyIp())) {
+            Node n = connectedNodeList.get(i);
+            if ((n.getMyIp().equals(node.getMyIp()))&&(n.getMyDefaultPort()==node.getMyDefaultPort())) {
                 hasNode = true;
                 break;
             }
@@ -347,13 +347,13 @@ public class DSManager {
         for (int i = 0; i < connectedNodeList.size(); i++) {
 
             String nodeIp = connectedNodeList.get(i).getMyIp();
-            String nodePort = Integer.toString(connectedNodeList.get(i).getMyDefaultPort());
+            int nodePort = connectedNodeList.get(i).getMyDefaultPort();
             String nodeUserName = connectedNodeList.get(i).getMyUsername();
 
             Message joinMsg = new Join(node.getMyIp(), Integer.toString(node.getMyDefaultPort()), node.getMyUsername());
             UDPClient messageClient = new UDPClient();
 
-            messageClient.sendMessage(nodeIp, Integer.parseInt(nodePort), joinMsg);
+            messageClient.sendMessage(nodeIp, nodePort, joinMsg);
 //                MessageDecoder messageDecoder = new MessageDecoder();
 //                Message message = messageDecoder.decodeMessage(receivedMessage);
 //
@@ -363,13 +363,7 @@ public class DSManager {
 //                        connectedNodeList.remove(i);
 //                    }
 //                }
-
-
-            for (int j = 0; j < connectedNodeList.size(); j++) {
-                controller.addNeighbour(connectedNodeList.get(i));
-            }
-
-
+            controller.addNeighbour(connectedNodeList.get(i));
         }
 
     }
