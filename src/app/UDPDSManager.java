@@ -26,7 +26,7 @@ import java.util.*;
 /**
  * @author Pubudu
  */
-public class UDPDSManager implements DSManagerInterface {
+public class UDPDSManager extends DSManager {
 
     public String bootStrapIp;
     public int bootStrapPort;
@@ -180,7 +180,7 @@ public class UDPDSManager implements DSManagerInterface {
             resValue = 9999;
         }
 
-        Message joinAck = new AckJoin(resValue);
+        Message joinAck = new AckJoin(resValue,node.getMyIp(),Integer.toString(node.getMyDefaultPort()));
         UDPClient messageClient = new UDPClient();
 
         messageClient.sendMessage(ip, Integer.parseInt(port), joinAck);

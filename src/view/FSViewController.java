@@ -1,7 +1,6 @@
 package view;
 
-import app.DSManagerInterface;
-import app.UDPDSManager;
+import app.DSManager;
 import app.Node;
 import app.WebServiceDSManager;
 import javafx.beans.property.SimpleStringProperty;
@@ -67,7 +66,7 @@ public class FSViewController implements Initializable {
     private Stage logStage;
     private LogWindowController logCtrl;
     private ObservableList<Node> neighbours;
-    private DSManagerInterface dsManager;
+    private DSManager dsManager;
     private String lastQuery = "";
 
 

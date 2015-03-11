@@ -5,7 +5,6 @@
  */
 package app;
 
-import communicator.MessageCallback;
 import communicator.MessageClient;
 
 import communicator.messages.Message;
@@ -30,7 +29,7 @@ import java.util.*;
 /**
  * @author Pubudu
  */
-public class WebServiceDSManager implements DSManagerInterface {
+public class WebServiceDSManager extends DSManager {
 
     public String bootStrapIp;
     public int bootStrapPort;
@@ -107,11 +106,6 @@ public class WebServiceDSManager implements DSManagerInterface {
     // Call from UI to connect
     public String start() {
 
-//        server = new UDPserver(node.getMyIp(), node.getMyDefaultPort(), new MessageCallback() {
-//
-//                    });
-
-
         String connectResult = this.connectToBS();
         return connectResult;
 
@@ -184,7 +178,7 @@ public class WebServiceDSManager implements DSManagerInterface {
             resValue = 9999;
         }
 
-        Message joinAck = new AckJoin(resValue);
+        Message joinAck = new AckJoin(resValue,node.getMyIp(),Integer.toString(node.getMyDefaultPort()));
 
         new WebServiceClient().sendMessage(ip, Integer.parseInt(port), joinAck);
     }

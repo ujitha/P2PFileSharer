@@ -1,6 +1,6 @@
 package p2pFilesharer.webservice.server;
 
-import app.DSManagerInterface;
+import app.DSManager;
 import app.WebServiceDSManager;
 
 import javax.jws.WebService;
@@ -11,11 +11,11 @@ import javax.jws.WebService;
 
 @WebService(endpointInterface = "p2pFilesharer.webservice.server.ServiceReceiver")
 public class ServiceReceiverImpl implements ServiceReceiver {
-    DSManagerInterface dsManager;
+    DSManager dsManager;
 
     public ServiceReceiverImpl(){};
 
-    public ServiceReceiverImpl(DSManagerInterface dsManager){
+    public ServiceReceiverImpl(DSManager dsManager){
         this.dsManager=dsManager;
     }
 
