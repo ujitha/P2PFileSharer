@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/P2PFileSharer.iml" filepath="$PROJECT_DIR$/P2PFileSharer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Webservice/Webservice.iml" filepath="$PROJECT_DIR$/Webservice/Webservice.iml" />
     </modules>
   </component>
 </project>
