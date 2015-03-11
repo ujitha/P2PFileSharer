@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<endpoints xmlns='http://java.sun.com/xml/ns/jax-ws/ri/runtime' version='2.0'>
+
+    <endpoint
+            name='p2pFilesharer.webservice.server.ServiceReceiver'
+            implementation='p2pFilesharer.webservice.server.ServiceReceiverImpl'
+            url-pattern='/services/ServiceReceiver'/>
+</endpoints>
