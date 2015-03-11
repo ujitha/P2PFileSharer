@@ -38,6 +38,7 @@ public class WebServiceDSManager extends DSManager {
     private int MY_DEFAUILT_PORT = 6000;
     private int TIMER_SECONDS = 5;
     private List<Node> connectedNodeList;
+    private List<Node> bsNodeList;
 
 
     private ServicePublisher servicePublisher;
@@ -60,6 +61,7 @@ public class WebServiceDSManager extends DSManager {
         fileRepo = new FileRepo();
         addFilesToNode();
         this.connectedNodeList = new ArrayList<Node>();
+        this.bsNodeList = new ArrayList<Node>();
     }
 
     // Constructor for having an overriding port number
@@ -95,6 +97,9 @@ public class WebServiceDSManager extends DSManager {
             Message leaveMsg = new Leave(node.getMyIp(), Integer.toString(node.getMyDefaultPort()));
             new WebServiceClient().sendMessage(nodeIp, Integer.parseInt(nodePort), leaveMsg);
         }
+
+        connectedNodeList.clear();
+        bsNodeList.clear();
         servicePublisher.stopService();
     }
 
@@ -154,13 +159,24 @@ public class WebServiceDSManager extends DSManager {
             }
 
         } else if (incomingMsg instanceof AckJoin) {
-            AckJoin ackJoin = (AckJoin) incomingMsg;
-            controller.writeToLog(ackJoin.toString());
-            //to change to get ip from meta data
 
-            //  AckJoin ackJoin = (AckJoin) incomingMsg;
-            // if (ackJoin.getValue() == 9999) {
-            // }
+            AckJoin ackJoin = (AckJoin) incomingMsg;
+
+            int value = ackJoin.getValue();
+            int ip = Integer.parseInt(ackJoin.getIp());
+            String port = ackJoin.getPort();
+
+            for (int i = 0; i < bsNodeList.size(); i++) {
+
+                if (bsNodeList.get(i).getMyIp().equals(ip) && bsNodeList.get(i).getMyDefaultPort() == ip) {
+                    if (value == 0) {
+                        connectedNodeList.add(bsNodeList.get(i));
+                        controller.addNeighbour(bsNodeList.get(i));
+                    }
+                    bsNodeList.remove(i);
+                }
+            }
+
         }
     }
 
@@ -171,8 +187,8 @@ public class WebServiceDSManager extends DSManager {
         String ip = joinNode.getIp();
         String port = joinNode.getPort();
         String userName = joinNode.getUserName();
-        Node node = new Node(ip, Integer.parseInt(port), userName);
-        boolean insertInTable = addNodeToList(node);
+        Node newNode = new Node(ip, Integer.parseInt(port), userName);
+        boolean insertInTable = addNodeToList(newNode);
         int resValue = 0;
         if (insertInTable) {
             resValue = 9999;
@@ -262,6 +278,7 @@ public class WebServiceDSManager extends DSManager {
         Message leaveAck = new AckLeave(leaveValue,node.getMyIp(),Integer.toString(node.getMyDefaultPort()));
 
         new WebServiceClient().sendMessage(nodeIp, Integer.parseInt(nodePort), leaveAck);
+        servicePublisher.stopService();
     }
 
     private boolean addNodeToList(Node node) {
@@ -315,10 +332,10 @@ public class WebServiceDSManager extends DSManager {
                     default:
                         if (ackRegister.getNoNodes() > 0) {
                             Node node1 = new Node(ackRegister.getIp1(), Integer.parseInt(ackRegister.getPort1()), ackRegister.getUserName1());
-                            connectedNodeList.add(node1);
+                            bsNodeList.add(node1);
                             if (ackRegister.getNoNodes() == 2) {
                                 Node node2 = new Node(ackRegister.getIp2(), Integer.parseInt(ackRegister.getPort2()), ackRegister.getUserName2());
-                                connectedNodeList.add(node2);
+                                bsNodeList.add(node2);
                             }
                         }
                         errorValue = "Successful";
@@ -340,26 +357,16 @@ public class WebServiceDSManager extends DSManager {
 
     private void joinToNodes() {
 
-        for (int i = 0; i < connectedNodeList.size(); i++) {
+        for (int i = 0; i < bsNodeList.size(); i++) {
 
-            String nodeIp = connectedNodeList.get(i).getMyIp();
-            int nodePort = connectedNodeList.get(i).getMyDefaultPort();
-            String nodeUserName = connectedNodeList.get(i).getMyUsername();
+            String nodeIp = bsNodeList.get(i).getMyIp();
+            int nodePort = bsNodeList.get(i).getMyDefaultPort();
+            String nodeUserName = bsNodeList.get(i).getMyUsername();
 
             Message joinMsg = new Join(node.getMyIp(), Integer.toString(node.getMyDefaultPort()), node.getMyUsername());
 
-
             new WebServiceClient().sendMessage(nodeIp, nodePort, joinMsg);
-//                MessageDecoder messageDecoder = new MessageDecoder();
-//                Message message = messageDecoder.decodeMessage(receivedMessage);
-//
-//                if (message instanceof AckJoin) {
-//                    AckJoin ackJoin = (AckJoin) message;
-//                    if (ackJoin.getValue() == 9999) {
-//                        connectedNodeList.remove(i);
-//                    }
-//                }
-            controller.addNeighbour(connectedNodeList.get(i));
+
         }
 
     }
