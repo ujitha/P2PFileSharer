@@ -7,9 +7,9 @@ import communicator.messages.Message;
  */
 public class AckRegister extends Message {
     /*
-     length REGOK no_nodes IP_1 port_1 IP_2 port_2
+     length REGOK no_nodes IP_1 port_1 user1 IP_2 port_2 user2
 
-    e.g., 0051 REGOK 2 129.82.123.45 5001 64.12.123.190 34001
+    e.g., 0059 REGOK 2 129.82.123.45 5001 abc 64.12.123.190 34001 pqr
     length – Length of the entire message including 4 characters used to indicate the length. In xxxx format.
     REGOK – Registration response.
     no_ nodes – Number of node entries that are going to be returned by the registry
@@ -108,7 +108,7 @@ public class AckRegister extends Message {
     public String toString() {
         /*length REGOK no_nodes IP_1 port_1 IP_2 port_2  */
         String msg=" REGOK "+noNodes;
-        if(noNodes>=1){
+        if(noNodes>=1 && noNodes<9996){
             msg=msg+" "+ip1+" "+port1+" "+userName1;
         }
         if(noNodes>=2 && noNodes<9996){
@@ -122,18 +122,41 @@ public class AckRegister extends Message {
     public void decodeMessage(String message) {
         String[] s=splitMessage(message);
         this.noNodes=Integer.parseInt(s[2]);
-        if(noNodes>=1 && noNodes<9996){
+        if(noNodes==1){
             ip1=s[3];
             port1=s[4];
             userName1=s[5];
         }
+        //length REGOK no_nodes IP_1 port_1 u1 IP_2 port_2 u2 ip_3 port_3 u3 ...
         if(noNodes>=2 && noNodes<9996){
-            ip2=s[6];
-            port2=s[7];
-            userName2=s[8];
+            int selectedIndex1=3,selectedIndex2=3;
+            int num=(int)(Math.random()*100)%noNodes;
+            selectedIndex1+=num*3;
+            do{
+                num=(int)(Math.random()*100)%noNodes;
+                selectedIndex2+=num*3;
+                if(selectedIndex1!=selectedIndex2){
+                    break;
+                }
+                selectedIndex2=3;
+            }while (true);
+            ip1=s[selectedIndex1];
+            port1=s[selectedIndex1+1];
+            userName1=s[selectedIndex1+2];
+
+            ip2=s[selectedIndex2];
+            port2=s[selectedIndex2+1];
+            userName2=s[selectedIndex2+2];
             noNodes=2;
         }
     }
 
-    //TODO
+
+//    public static void main(String[] args) {
+//        String s= "0015 REGOK 9996";
+//        //"0059 REGOK 2 129.82.123.45 5001 abc 64.12.123.190 34001 pqr";
+//        //"0095 REGOK 4 129.82.123.45 5001 abc 64.12.123.190 34001 pqr 1.1.1.1 1111 abc2 1.1.1.1 1111 abc3";
+//        AckRegister a=new AckRegister(s);
+//        System.out.println(a.toString());
+//    }
 }

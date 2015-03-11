@@ -262,7 +262,7 @@ public class UDPDSManager extends DSManager {
             }
         }
 
-        Message leaveAck = new AckLeave(leaveValue);
+        Message leaveAck = new AckLeave(leaveValue,node.getMyIp(),Integer.toString(node.getMyDefaultPort()));
         UDPClient messageClient = new UDPClient();
 
         messageClient.sendMessage(nodeIp, Integer.parseInt(nodePort), leaveAck);

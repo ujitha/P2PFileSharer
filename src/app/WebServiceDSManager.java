@@ -259,7 +259,7 @@ public class WebServiceDSManager extends DSManager {
             }
         }
 
-        Message leaveAck = new AckLeave(leaveValue);
+        Message leaveAck = new AckLeave(leaveValue,node.getMyIp(),Integer.toString(node.getMyDefaultPort()));
 
         new WebServiceClient().sendMessage(nodeIp, Integer.parseInt(nodePort), leaveAck);
     }
