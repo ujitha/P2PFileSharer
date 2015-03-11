@@ -17,26 +17,25 @@
             <String fx:value="bordered-pane" />
          </styleClass>
          <children>
-            <Label layoutX="21.0" layoutY="22.0" prefHeight="16.0" prefWidth="81.0" text="Server IP">
+            <Label layoutX="21.0" layoutY="57.0" prefHeight="16.0" prefWidth="81.0" text="Server IP">
                <font>
                   <Font name="System Bold" size="13.0" />
                </font></Label>
-            <TextField fx:id="serverIPTF" layoutX="113.0" layoutY="17.0" prefHeight="25.0" prefWidth="195.0" promptText="Server IP Address" />
-            <Label layoutX="339.0" layoutY="22.0" prefHeight="16.0" prefWidth="102.0" text="Server Port">
+            <TextField fx:id="serverIPTF" layoutX="113.0" layoutY="52.0" prefHeight="25.0" prefWidth="195.0" promptText="Server IP Address" />
+            <Label layoutX="339.0" layoutY="57.0" prefHeight="16.0" prefWidth="102.0" text="Server Port">
                <font>
                   <Font name="System Bold" size="13.0" />
                </font></Label>
-            <TextField fx:id="serverPortTF" layoutX="452.0" layoutY="17.0" prefHeight="25.0" prefWidth="143.0" promptText="Server Port Number" />
-            <Label layoutX="21.0" layoutY="57.0" prefHeight="16.0" prefWidth="81.0" text="Node IP">
+            <TextField fx:id="serverPortTF" layoutX="452.0" layoutY="52.0" prefHeight="25.0" prefWidth="143.0" promptText="Server Port Number" />
+            <Label layoutX="21.0" layoutY="22.0" prefHeight="16.0" prefWidth="81.0" text="Node IP">
                <font>
                   <Font name="System Bold" size="13.0" />
                </font></Label>
-            <TextField fx:id="nodeIPTF" layoutX="113.0" layoutY="52.0" prefHeight="25.0" prefWidth="195.0" promptText="Node IP Address" />
-            <Label layoutX="339.0" layoutY="57.0" prefHeight="16.0" prefWidth="102.0" text="Node Port">
+            <Label layoutX="339.0" layoutY="22.0" prefHeight="16.0" prefWidth="102.0" text="Node Port">
                <font>
                   <Font name="System Bold" size="13.0" />
                </font></Label>
-            <TextField fx:id="nodePortTF" layoutX="452.0" layoutY="52.0" prefHeight="25.0" prefWidth="143.0" promptText="Node Port Number" />
+            <TextField fx:id="nodePortTF" layoutX="452.0" layoutY="17.0" prefHeight="25.0" prefWidth="143.0" promptText="Node Port Number" />
             <Button fx:id="connectBtn" layoutX="616.0" layoutY="26.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="148.0" styleClass="green-button" text="Connect">
                <font>
                   <Font name="System Bold" size="14.0" />
@@ -52,6 +51,7 @@
                   <Font name="System Bold" size="13.0" />
                </font>
             </Label>
+            <ComboBox fx:id="nodeIPCB" editable="true" layoutX="113.0" layoutY="17.0" prefHeight="25.0" prefWidth="195.0" promptText="Node IP Address" />
          </children>
       </AnchorPane>
     <AnchorPane fx:id="searchPane" maxHeight="100.0" minHeight="100.0" minWidth="0.0" prefHeight="100.0" prefWidth="120.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="140.0">

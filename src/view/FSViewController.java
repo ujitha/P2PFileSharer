@@ -6,6 +6,8 @@ import app.UDPDSManager;
 import app.WebServiceDSManager;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -19,10 +21,8 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.ResourceBundle;
+import java.net.*;
+import java.util.*;
 
 /**
  * Created by udith on 3/4/15.
@@ -41,7 +41,7 @@ public class FSViewController implements Initializable {
     @FXML
     TextField serverPortTF;
     @FXML
-    TextField nodeIPTF;
+    ComboBox<String> nodeIPCB;
     @FXML
     TextField nodePortTF;
     @FXML
@@ -79,9 +79,33 @@ public class FSViewController implements Initializable {
         popupCreator = new PopupCreator();
         neighbours = FXCollections.observableArrayList();
 
-        serverIPTF.setText("127.0.0.1");
+        try {
+            Enumeration e1 = NetworkInterface.getNetworkInterfaces();
+            ObservableList<String> ips = FXCollections.observableArrayList();
+            while(e1.hasMoreElements()) {
+                NetworkInterface n = (NetworkInterface)e1.nextElement();
+                Enumeration e2 = n.getInetAddresses();
+                while (e2.hasMoreElements()) {
+                    InetAddress iNetAdd = (InetAddress)e2.nextElement();
+                    if(iNetAdd instanceof Inet4Address){
+                        ips.add(iNetAdd.getHostAddress());
+                    }
+                }
+            }
+            nodeIPCB.setItems(ips);
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+
+        nodeIPCB.valueProperty().addListener(new ChangeListener<String>() {
+
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                serverIPTF.setText(newValue);
+            }
+        });
+        nodeIPCB.getSelectionModel().selectFirst();
         serverPortTF.setText("5001");
-        nodeIPTF.setText("127.0.0.1");
         nodePortTF.setText("5100");
         connected = false;
 
@@ -134,7 +158,7 @@ public class FSViewController implements Initializable {
                 if (conStatus) {
                     serverIPTF.setDisable(true);
                     serverPortTF.setDisable(true);
-                    nodeIPTF.setDisable(true);
+                    nodeIPCB.setDisable(true);
                     nodePortTF.setDisable(true);
 
                     populateFileList(dsManager.getNodeFileList());
@@ -157,7 +181,7 @@ public class FSViewController implements Initializable {
                 if (conStatus) {
                     serverIPTF.setDisable(false);
                     serverPortTF.setDisable(false);
-                    nodeIPTF.setDisable(false);
+                    nodeIPCB.setDisable(false);
                     nodePortTF.setDisable(false);
 
                     searchPane.setDisable(true);
@@ -196,7 +220,7 @@ public class FSViewController implements Initializable {
         try {
             String serverIP = serverIPTF.getText();
             int serverPort = Integer.parseInt(serverPortTF.getText());
-            String nodeIP = nodeIPTF.getText();
+            String nodeIP = nodeIPCB.getValue();
             int nodePort = Integer.parseInt(nodePortTF.getText());
 
             RadioButton selectedRB = (RadioButton)comRBGroup.getSelectedToggle();
