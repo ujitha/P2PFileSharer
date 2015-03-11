@@ -24,7 +24,7 @@ public class WebServiceClient {
             e.printStackTrace();
         }
 
-        QName qname = new QName("http://p2pFilesharer.webservice.server/", "ServiceReceiverImplService");
+        QName qname = new QName("http://server.webservice.p2pFilesharer/", "ServiceReceiverImplService");
         Service service = Service.create(url, qname);
         ServiceReceiver serviceReceiver=service.getPort(ServiceReceiver.class);
 

@@ -333,9 +333,9 @@ public class WebServiceDSManager implements DSManagerInterface {
 
 
             }
-
-            joinToNodes();
             servicePublisher=new ServicePublisher(node.getMyIp(),Integer.toString(node.getMyDefaultPort()),this);
+            joinToNodes();
+
 
         } catch (IOException e) {
             e.printStackTrace();
