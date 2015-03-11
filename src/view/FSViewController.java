@@ -1,5 +1,6 @@
 package view;
 
+import app.DSManagerInterface;
 import app.UDPDSManager;
 import app.Node;
 import javafx.beans.property.SimpleStringProperty;
@@ -65,7 +66,7 @@ public class FSViewController implements Initializable {
     private Stage logStage;
     private LogWindowController logCtrl;
     private ObservableList<Node> neighbours;
-    private UDPDSManager UDPDSManager;
+    private DSManagerInterface dsManager;
     private String lastQuery = "";
 
 
@@ -133,7 +134,7 @@ public class FSViewController implements Initializable {
                     nodeIPTF.setDisable(true);
                     nodePortTF.setDisable(true);
 
-                    populateFileList(UDPDSManager.getNodeFileList());
+                    populateFileList(dsManager.getNodeFileList());
 
                     searchPane.setDisable(false);
                     filePane.setDisable(false);
@@ -178,7 +179,7 @@ public class FSViewController implements Initializable {
             searchTF.setDisable(true);
             String fileName = searchTF.getText();
             lastQuery = fileName;
-            UDPDSManager.getQueryResults(fileName);
+            dsManager.getQueryResults(fileName);
         });
 
         logBtn.setOnAction((event) -> {
@@ -197,9 +198,9 @@ public class FSViewController implements Initializable {
 //                throw new Exception("Empty String");
 //            }
 
-            UDPDSManager = new UDPDSManager(serverIP, serverPort, nodeIP, nodePort, this);
+            dsManager = new UDPDSManager(serverIP, serverPort, nodeIP, nodePort, this);
 
-            String status = UDPDSManager.start();
+            String status = dsManager.start();
             if (status.equals("Successful")) {
                 connected = true;
                 return true;
@@ -214,7 +215,7 @@ public class FSViewController implements Initializable {
 
     public boolean disconnectFromNetwork() {
         if(connected) {
-            UDPDSManager.sendLeaveMessages();
+            dsManager.sendLeaveMessages();
             connected = false;
         }
         return true;

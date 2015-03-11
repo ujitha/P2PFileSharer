@@ -26,7 +26,7 @@ import java.util.*;
 /**
  * @author Pubudu
  */
-public class UDPDSManager implements DSMenagerInterface{
+public class UDPDSManager implements DSManagerInterface {
 
     public String bootStrapIp;
     public int bootStrapPort;
