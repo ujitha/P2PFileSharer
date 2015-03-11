@@ -68,6 +68,7 @@ public class UDPDSManager extends DSManager {
         node = new Node(myIp, myPort, username);
         fileRepo = new FileRepo();
         addFilesToNode();
+        this.bsNodeList = new ArrayList<Node>();
         this.connectedNodeList = new ArrayList<Node>();
         this.bsNodeList = new ArrayList<Node>();
     }
