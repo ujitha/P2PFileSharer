@@ -76,6 +76,7 @@ public class WebServiceDSManager extends DSManager {
         fileRepo = new FileRepo();
         addFilesToNode();
         this.connectedNodeList = new ArrayList<Node>();
+        this.bsNodeList = new ArrayList<Node>();
     }
 
     // Calls from UI when leaving the network to inform other nodes
@@ -163,12 +164,12 @@ public class WebServiceDSManager extends DSManager {
             AckJoin ackJoin = (AckJoin) incomingMsg;
 
             int value = ackJoin.getValue();
-            int ip = Integer.parseInt(ackJoin.getIp());
-            String port = ackJoin.getPort();
+            String ip = ackJoin.getIp();
+            int port = Integer.parseInt(ackJoin.getPort());
 
             for (int i = 0; i < bsNodeList.size(); i++) {
 
-                if (bsNodeList.get(i).getMyIp().equals(ip) && bsNodeList.get(i).getMyDefaultPort() == ip) {
+                if (bsNodeList.get(i).getMyIp().equals(ip) && bsNodeList.get(i).getMyDefaultPort() == port) {
                     if (value == 0) {
                         connectedNodeList.add(bsNodeList.get(i));
                         controller.addNeighbour(bsNodeList.get(i));
@@ -344,8 +345,13 @@ public class WebServiceDSManager extends DSManager {
 
 
             }
-            servicePublisher=new ServicePublisher(node.getMyIp(),Integer.toString(node.getMyDefaultPort()),this);
-            joinToNodes();
+
+            if(errorValue.equals("Successful"))
+            {
+                servicePublisher=new ServicePublisher(node.getMyIp(),Integer.toString(node.getMyDefaultPort()),this);
+                joinToNodes();
+            }
+
 
 
         } catch (IOException e) {
@@ -387,7 +393,7 @@ public class WebServiceDSManager extends DSManager {
         queryResults = new HashMap<String, String[]>();
 
         if (!results.isEmpty()) {
-            queryResults.put("ThisNode", results.toArray(new String[results.size()]));
+            queryResults.put(node.getMyIp()+" - This Node", results.toArray(new String[results.size()]));
         }
 
         Random random = new Random();

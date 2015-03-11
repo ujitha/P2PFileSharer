@@ -18,6 +18,7 @@ public class ServicePublisher {
 
     public void stopService(){
         e.stop();
+        System.out.println("Service stopped");
     }
 
 //    public static void main(String[] args){
