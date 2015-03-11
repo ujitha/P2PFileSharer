@@ -21,7 +21,7 @@ public class UDPClient {
             InetAddress IPAddress = InetAddress.getByName(destinationIp);
 
             byte[] sendData = new byte[1024];
-            byte[] receiveData = new byte[1024];
+//            byte[] receiveData = new byte[1024];
             String sentence = message.toString();
 
             sendData = sentence.getBytes();
