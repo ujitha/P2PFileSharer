@@ -1,6 +1,6 @@
 package view;
 
-import app.DSManager;
+import app.UDPDSManager;
 import app.Node;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -16,13 +16,11 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-import javax.swing.text.TabableView;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.ResourceBundle;
-import java.util.Set;
 
 /**
  * Created by udith on 3/4/15.
@@ -67,7 +65,7 @@ public class FSViewController implements Initializable {
     private Stage logStage;
     private LogWindowController logCtrl;
     private ObservableList<Node> neighbours;
-    private DSManager dsManager;
+    private UDPDSManager UDPDSManager;
     private String lastQuery = "";
 
 
@@ -135,7 +133,7 @@ public class FSViewController implements Initializable {
                     nodeIPTF.setDisable(true);
                     nodePortTF.setDisable(true);
 
-                    populateFileList(dsManager.getNodeFileList());
+                    populateFileList(UDPDSManager.getNodeFileList());
 
                     searchPane.setDisable(false);
                     filePane.setDisable(false);
@@ -180,7 +178,7 @@ public class FSViewController implements Initializable {
             searchTF.setDisable(true);
             String fileName = searchTF.getText();
             lastQuery = fileName;
-            dsManager.getQueryResults(fileName);
+            UDPDSManager.getQueryResults(fileName);
         });
 
         logBtn.setOnAction((event) -> {
@@ -199,9 +197,9 @@ public class FSViewController implements Initializable {
 //                throw new Exception("Empty String");
 //            }
 
-            dsManager = new DSManager(serverIP, serverPort, nodeIP, nodePort, this);
+            UDPDSManager = new UDPDSManager(serverIP, serverPort, nodeIP, nodePort, this);
 
-            String status = dsManager.start();
+            String status = UDPDSManager.start();
             if (status.equals("Successful")) {
                 connected = true;
                 return true;
@@ -216,7 +214,7 @@ public class FSViewController implements Initializable {
 
     public boolean disconnectFromNetwork() {
         if(connected) {
-            dsManager.sendLeaveMessages();
+            UDPDSManager.sendLeaveMessages();
             connected = false;
         }
         return true;

@@ -26,7 +26,7 @@ import java.util.*;
 /**
  * @author Pubudu
  */
-public class DSManager {
+public class UDPDSManager implements DSMenagerInterface{
 
     public String bootStrapIp;
     public int bootStrapPort;
@@ -43,7 +43,7 @@ public class DSManager {
     private Timer searchTimer;
 
     // Constructor for having default port number
-    public DSManager(String bootStrapIp, int bootStrapPort, String myIp, FSViewController controller) {
+    public UDPDSManager(String bootStrapIp, int bootStrapPort, String myIp, FSViewController controller) {
         this.bootStrapIp = bootStrapIp;
         this.bootStrapPort = bootStrapPort;
         this.controller = controller;
@@ -56,7 +56,7 @@ public class DSManager {
     }
 
     // Constructor for having an overriding port number
-    public DSManager(String bootStrapIp, int bootStrapPort, String myIp, int myPort, FSViewController controller) {
+    public UDPDSManager(String bootStrapIp, int bootStrapPort, String myIp, int myPort, FSViewController controller) {
         this.bootStrapIp = bootStrapIp;
         this.bootStrapPort = bootStrapPort;
         this.controller = controller;
