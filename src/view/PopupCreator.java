@@ -22,6 +22,8 @@ import java.util.HashMap;
  */
 public class PopupCreator {
 
+    SearchResultsController srController = null;
+
     public void showErrorDialog(String title, String message){
         JOptionPane.showMessageDialog(null,message,title,JOptionPane.ERROR_MESSAGE);
 
@@ -52,24 +54,35 @@ public class PopupCreator {
         alert.showAndWait();*/
     }
 
-    public void showSearchResults(String query, HashMap<String,String[]> results){
-        AnchorPane srWindow = null;
-        SearchResultsController srController = null;
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader();
-            fxmlLoader.setLocation(FSViewController.class.getResource("SearchResults.fxml"));
-            srWindow = fxmlLoader.load();
-            srController = fxmlLoader.getController();
-        } catch (IOException e) {
-            e.printStackTrace();
+    public void showSearchResults(String query, HashMap<String, String[]> results, int status){
+        switch (status){
+            case 1:
+                AnchorPane srWindow = null;
+
+                try {
+                    FXMLLoader fxmlLoader = new FXMLLoader();
+                    fxmlLoader.setLocation(FSViewController.class.getResource("SearchResults.fxml"));
+                    srWindow = fxmlLoader.load();
+                    srController = fxmlLoader.getController();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                srController.addResults(query, results);
+
+                Stage srStage = new Stage(StageStyle.UTILITY);
+                Scene srScene = new Scene(srWindow);
+                srStage.setTitle("Search Results");
+                srStage.setScene(srScene);
+                srStage.show();
+                break;
+            case 2:
+                srController.addResults(query, results);
+                break;
+            case 3:
+                srController.endOfSearch();
+                break;
         }
 
-        srController.addResults(query, results);
-
-        Stage srStage = new Stage(StageStyle.UTILITY);
-        Scene srScene = new Scene(srWindow);
-        srStage.setTitle("Search Results");
-        srStage.setScene(srScene);
-        srStage.show();
     }
 }

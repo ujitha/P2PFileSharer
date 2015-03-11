@@ -22,6 +22,10 @@ public class SearchResultsController implements Initializable {
     @FXML
     Label queryLabel;
     @FXML
+    Label numSearch;
+    @FXML
+    ProgressIndicator wait;
+    @FXML
     TableView<SearchResult> searchTable;
     @FXML
     TableColumn<SearchResult, String> fileColumn;
@@ -37,6 +41,9 @@ public class SearchResultsController implements Initializable {
         fileColumn.setCellValueFactory(cellData -> cellData.getValue().fileNameProperty());
         ipColumn.setCellValueFactory(cellData -> cellData.getValue().ipProperty());
         searchTable.setItems(results);
+
+        numSearch.setText("Searching ...");
+        wait.setVisible(true);
     }
 
     public void addResults(String q, HashMap<String,String[]> results){
@@ -51,5 +58,10 @@ public class SearchResultsController implements Initializable {
                 this.results.add(sr);
             }
         }
+    }
+
+    public void endOfSearch(){
+        wait.setVisible(false);
+        numSearch.setText(this.results.size()+" result(s) found");
     }
 }

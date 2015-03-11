@@ -26,5 +26,11 @@
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
          </columnResizePolicy>
       </TableView>
+      <Label fx:id="numSearch" alignment="CENTER_RIGHT" contentDisplay="TEXT_ONLY" layoutX="365.0" layoutY="13.0" prefHeight="15.0" prefWidth="187.0" text="Searching ..." textAlignment="RIGHT">
+         <font>
+            <Font name="System Italic" size="12.0" />
+         </font>
+      </Label>
+      <ProgressIndicator fx:id="wait" layoutX="555.0" layoutY="7.0" prefHeight="25.0" prefWidth="25.0" visible="false" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
    </children>
 </AnchorPane>

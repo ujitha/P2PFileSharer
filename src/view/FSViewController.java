@@ -266,16 +266,26 @@ public class FSViewController implements Initializable {
         this.logCtrl.appendLog(str);
     }
 
-    public void showSearchResults(HashMap<String, String[]> results) {
-        if(results.isEmpty()){
-            popupCreator.showInfoDialog("No files found", "No files matching \'"+lastQuery+"\' found!");
+    /*
+        status = 1 -> initial result
+        status = 2 -> any other result
+        status = 3 -> end of search
+     */
+    public void showSearchResults(HashMap<String, String[]> results, int status) {
+
+        popupCreator.showSearchResults(lastQuery,results,status);
+        if(status == 3){
+            searchBtn.setText("Search File");
+            searchTF.setDisable(false);
+            searchBtn.setDisable(false);
         }
-        else {
-            popupCreator.showSearchResults(lastQuery, results);
-        }
-        searchBtn.setText("Search File");
-        searchTF.setDisable(false);
-        searchBtn.setDisable(false);
+//        if(results.isEmpty()){
+//            popupCreator.showInfoDialog("No files found", "No files matching \'"+lastQuery+"\' found!");
+//        }
+//        else {
+//            popupCreator.showSearchResults(lastQuery, results);
+//        }
+
     }
 
 }

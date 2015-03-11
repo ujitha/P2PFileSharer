@@ -43,6 +43,10 @@ public class UDPDSManager extends DSManager {
     private FSViewController controller;
     private Timer searchTimer;
 
+    //For Performance Evaluation
+    Long startTime;
+    Long endTime;
+
     // Constructor for having default port number
     public UDPDSManager(String bootStrapIp, int bootStrapPort, String myIp, FSViewController controller) {
         this.bootStrapIp = bootStrapIp;
@@ -146,10 +150,13 @@ public class UDPDSManager extends DSManager {
                         int ackValue = searchAck.getNoOfFiles();
                         stopTimer();
 
-                        if (ackValue > 0) {
+                        if ((ackValue > 0)&&(ackValue < 9998)) {
+                            endTime = System.currentTimeMillis();
                             String ip = searchAck.getIp();
                             String[] results = searchAck.getFileNames();
                             queryResults.put(ip, results);
+                            controller.showSearchResults(queryResults,2);
+                            queryResults.clear();
                         }
 
                         startTimer();
@@ -392,13 +399,19 @@ public class UDPDSManager extends DSManager {
     // calls from ui to check from node's file list, otherwise send to other nodes
     public void getQueryResults(String query) {
 
+        controller.writeToLog("Searched for : "+query);
+        startTime = System.currentTimeMillis();
+
         boolean hasFile = false;
         ArrayList<String> results = node.isFileInRepo(query);
         queryResults = new HashMap<String, String[]>();
 
         if (!results.isEmpty()) {
             queryResults.put(node.getMyIp()+" - This Node", results.toArray(new String[results.size()]));
+            endTime = System.currentTimeMillis();
         }
+        controller.showSearchResults(queryResults,1);
+        queryResults.clear();
 
         Random random = new Random();
         int nodeSize = connectedNodeList.size();
@@ -412,7 +425,11 @@ public class UDPDSManager extends DSManager {
             isTimerOn = true;
             startTimer();
         } else {
-            controller.showSearchResults(queryResults);
+            if(endTime<startTime){
+                endTime = System.currentTimeMillis();
+            }
+            controller.writeToLog("Search time : "+(endTime-startTime)+"ms");
+            controller.showSearchResults(queryResults, 3);
         }
 
         ArrayList<Integer> sentNodes = new ArrayList<Integer>();
@@ -449,7 +466,11 @@ public class UDPDSManager extends DSManager {
                 Platform.runLater(new Runnable() {
                     public void run() {
                         isTimerOn = false;
-                        controller.showSearchResults(queryResults);
+                        if(endTime<startTime){
+                            endTime = System.currentTimeMillis();
+                        }
+                        controller.writeToLog("Search time : "+(endTime-startTime)+"ms");
+                        controller.showSearchResults(queryResults, 3);
                     }
                 });
             }
