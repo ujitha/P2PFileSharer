@@ -3,6 +3,7 @@ package view;
 import app.DSManagerInterface;
 import app.UDPDSManager;
 import app.Node;
+import app.WebServiceDSManager;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
@@ -198,7 +199,11 @@ public class FSViewController implements Initializable {
 //                throw new Exception("Empty String");
 //            }
 
-            dsManager = new UDPDSManager(serverIP, serverPort, nodeIP, nodePort, this);
+            //if udp
+//            dsManager = new UDPDSManager(serverIP, serverPort, nodeIP, nodePort, this);
+
+            //if web service
+            dsManager=new WebServiceDSManager(serverIP,serverPort,nodeIP,nodePort,this);
 
             String status = dsManager.start();
             if (status.equals("Successful")) {

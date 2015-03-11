@@ -1,6 +1,7 @@
 package p2pFilesharer.webservice.server;
 
 import app.DSManagerInterface;
+import app.WebServiceDSManager;
 
 import javax.jws.WebService;
 
@@ -21,5 +22,6 @@ public class ServiceReceiverImpl implements ServiceReceiver {
     @Override
     public void sendMessage(String message) {
         //TODO pass the message to DSmanager
+        ((WebServiceDSManager)dsManager).receiveMessage(message);
     }
 }

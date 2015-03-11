@@ -7,8 +7,7 @@ package app;
 
 import communicator.MessageCallback;
 import communicator.MessageClient;
-import communicator.UDPClient;
-import communicator.UDPserver;
+
 import communicator.messages.Message;
 import communicator.messages.MessageDecoder;
 import communicator.messages.join.AckJoin;
@@ -21,6 +20,7 @@ import communicator.messages.register.Unregister;
 import communicator.messages.search.AckSearch;
 import communicator.messages.search.Search;
 import javafx.application.Platform;
+import p2pFilesharer.webservice.client.WebServiceClient;
 import p2pFilesharer.webservice.server.ServicePublisher;
 import view.FSViewController;
 
@@ -94,9 +94,7 @@ public class WebServiceDSManager implements DSManagerInterface {
             String nodeIp = connectedNodeList.get(i).getMyIp();
             String nodePort = Integer.toString(connectedNodeList.get(i).getMyDefaultPort());
             Message leaveMsg = new Leave(node.getMyIp(), Integer.toString(node.getMyDefaultPort()));
-            UDPClient udpClient = new UDPClient();
-            udpClient.sendMessage(nodeIp, Integer.parseInt(nodePort), leaveMsg);
-
+            new WebServiceClient().sendMessage(nodeIp, Integer.parseInt(nodePort), leaveMsg);
         }
         servicePublisher.stopService();
     }
@@ -120,7 +118,6 @@ public class WebServiceDSManager implements DSManagerInterface {
     }
 
     public void receiveMessage(String message) {
-
         controller.writeToLog(message);
         MessageDecoder msDecoder = new MessageDecoder();
         Message incomingMsg = msDecoder.decodeMessage(message);
@@ -170,11 +167,7 @@ public class WebServiceDSManager implements DSManagerInterface {
             //  AckJoin ackJoin = (AckJoin) incomingMsg;
             // if (ackJoin.getValue() == 9999) {
             // }
-
-
         }
-
-
     }
 
 
@@ -192,9 +185,8 @@ public class WebServiceDSManager implements DSManagerInterface {
         }
 
         Message joinAck = new AckJoin(resValue);
-        UDPClient messageClient = new UDPClient();
 
-        messageClient.sendMessage(ip, Integer.parseInt(port), joinAck);
+        new WebServiceClient().sendMessage(ip, Integer.parseInt(port), joinAck);
     }
 
     // Process Search Message
@@ -214,15 +206,15 @@ public class WebServiceDSManager implements DSManagerInterface {
         if (!results.isEmpty()) {
 
             Message searchAck = new AckSearch(results.size(), node.getMyIp(), Integer.toString(node.getMyDefaultPort()), TOTAL_HOP_COUNT - hopSize, results.toArray(new String[results.size()]));
-            UDPClient messageClient = new UDPClient();
-            messageClient.sendMessage(ip, Integer.parseInt(port), searchAck);
+
+            new WebServiceClient().sendMessage(ip, Integer.parseInt(port), searchAck);
 
         } else {
 
             if (hopSize == 0) {
                 Message searchAck = new AckSearch(0, node.getMyIp(), Integer.toString(node.getMyDefaultPort()), TOTAL_HOP_COUNT - hopSize, results.toArray(new String[results.size()]));
-                UDPClient messageClient = new UDPClient();
-                messageClient.sendMessage(ip, Integer.parseInt(port), searchAck);
+
+                new WebServiceClient().sendMessage(ip, Integer.parseInt(port), searchAck);
 
             } else {
                 Random random = new Random();
@@ -247,8 +239,8 @@ public class WebServiceDSManager implements DSManagerInterface {
                         String nodeIp = connectedNodeList.get(nodeId).getMyIp();
                         int nodePort = connectedNodeList.get(nodeId).getMyDefaultPort();
                         searchMsg.reduceHopCount();
-                        UDPClient messageClient = new UDPClient();
-                        messageClient.sendMessage(nodeIp, nodePort, searchMsg);
+
+                        new WebServiceClient().sendMessage(nodeIp, nodePort, searchMsg);
                         nodeCount--;
                     }
                 }
@@ -274,9 +266,8 @@ public class WebServiceDSManager implements DSManagerInterface {
         }
 
         Message leaveAck = new AckLeave(leaveValue);
-        UDPClient messageClient = new UDPClient();
 
-        messageClient.sendMessage(nodeIp, Integer.parseInt(nodePort), leaveAck);
+        new WebServiceClient().sendMessage(nodeIp, Integer.parseInt(nodePort), leaveAck);
     }
 
     private boolean addNodeToList(Node node) {
@@ -362,9 +353,9 @@ public class WebServiceDSManager implements DSManagerInterface {
             String nodeUserName = connectedNodeList.get(i).getMyUsername();
 
             Message joinMsg = new Join(node.getMyIp(), Integer.toString(node.getMyDefaultPort()), node.getMyUsername());
-            UDPClient messageClient = new UDPClient();
 
-            messageClient.sendMessage(nodeIp, nodePort, joinMsg);
+
+            new WebServiceClient().sendMessage(nodeIp, nodePort, joinMsg);
 //                MessageDecoder messageDecoder = new MessageDecoder();
 //                Message message = messageDecoder.decodeMessage(receivedMessage);
 //
@@ -430,8 +421,8 @@ public class WebServiceDSManager implements DSManagerInterface {
                 String nodeIp = connectedNodeList.get(nodeId).getMyIp();
                 int nodePort = connectedNodeList.get(nodeId).getMyDefaultPort();
                 Message searchMsg = new Search(node.getMyIp(), Integer.toString(node.getMyDefaultPort()), query, TOTAL_HOP_COUNT);
-                UDPClient messageClient = new UDPClient();
-                messageClient.sendMessage(nodeIp, nodePort, searchMsg);
+
+                new WebServiceClient().sendMessage(nodeIp, nodePort, searchMsg);
                 nodeCount--;
             }
         }
