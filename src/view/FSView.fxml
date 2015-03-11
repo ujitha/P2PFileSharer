@@ -11,40 +11,62 @@
 
 <AnchorPane id="AnchorPane" fx:id="mainPane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="gray-pane" stylesheets="@css/styles.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.FSViewController">
    <children>
-    <AnchorPane fx:id="connectionPane" maxHeight="100.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="780.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+    <AnchorPane fx:id="connectionPane" maxHeight="100.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="120.0" prefWidth="780.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
          <styleClass>
             <String fx:value="white-pane" />
             <String fx:value="bordered-pane" />
          </styleClass>
          <children>
-            <Label layoutX="21.0" layoutY="22.0" text="Server IP" />
-            <TextField fx:id="serverIPTF" layoutX="94.0" layoutY="17.0" prefHeight="25.0" prefWidth="214.0" promptText="Server IP Address" />
-            <Label layoutX="339.0" layoutY="22.0" prefHeight="15.0" prefWidth="81.0" text="Server Port" />
-            <TextField fx:id="serverPortTF" layoutX="424.0" layoutY="17.0" promptText="Server Port Number" />
-            <Label layoutX="21.0" layoutY="61.0" text="Node IP" />
-            <TextField fx:id="nodeIPTF" layoutX="94.0" layoutY="56.0" prefHeight="25.0" prefWidth="214.0" promptText="Node IP Address" />
-            <Label layoutX="339.0" layoutY="61.0" text="Node Port" />
-            <TextField fx:id="nodePortTF" layoutX="424.0" layoutY="56.0" promptText="Node Port Number" />
+            <Label layoutX="21.0" layoutY="22.0" prefHeight="16.0" prefWidth="81.0" text="Server IP">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font></Label>
+            <TextField fx:id="serverIPTF" layoutX="113.0" layoutY="17.0" prefHeight="25.0" prefWidth="195.0" promptText="Server IP Address" />
+            <Label layoutX="339.0" layoutY="22.0" prefHeight="16.0" prefWidth="102.0" text="Server Port">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font></Label>
+            <TextField fx:id="serverPortTF" layoutX="452.0" layoutY="17.0" prefHeight="25.0" prefWidth="143.0" promptText="Server Port Number" />
+            <Label layoutX="21.0" layoutY="57.0" prefHeight="16.0" prefWidth="81.0" text="Node IP">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font></Label>
+            <TextField fx:id="nodeIPTF" layoutX="113.0" layoutY="52.0" prefHeight="25.0" prefWidth="195.0" promptText="Node IP Address" />
+            <Label layoutX="339.0" layoutY="57.0" prefHeight="16.0" prefWidth="102.0" text="Node Port">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font></Label>
+            <TextField fx:id="nodePortTF" layoutX="452.0" layoutY="52.0" prefHeight="25.0" prefWidth="143.0" promptText="Node Port Number" />
             <Button fx:id="connectBtn" layoutX="616.0" layoutY="26.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="148.0" styleClass="green-button" text="Connect">
                <font>
                   <Font name="System Bold" size="14.0" />
                </font>
             </Button>
+            <RadioButton fx:id="udpRB" layoutX="170.0" layoutY="90.0" mnemonicParsing="false" selected="true" text="UDP">
+               <toggleGroup>
+                  <ToggleGroup fx:id="comRBGroup" />
+               </toggleGroup>
+            </RadioButton>
+            <Label layoutX="21.0" layoutY="92.0" text="Communication">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+            </Label>
          </children>
       </AnchorPane>
-    <AnchorPane fx:id="searchPane" maxHeight="120.0" minHeight="120.0" minWidth="0.0" prefHeight="100.0" prefWidth="120.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="120.0">
+    <AnchorPane fx:id="searchPane" maxHeight="100.0" minHeight="100.0" minWidth="0.0" prefHeight="100.0" prefWidth="120.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="140.0">
          <children>
             <Label layoutX="12.0" layoutY="8.0" text="Search" textFill="#123677">
                <font>
                   <Font size="38.0" />
                </font>
             </Label>
-            <TextField fx:id="searchTF" layoutX="161.0" layoutY="55.0" prefHeight="40.0" prefWidth="406.0" promptText="Type a file name to Search">
+            <TextField fx:id="searchTF" layoutX="162.0" layoutY="36.0" prefHeight="40.0" prefWidth="406.0" promptText="Type a file name to Search">
                <font>
                   <Font size="14.0" />
                </font>
             </TextField>
-            <Button fx:id="searchBtn" layoutX="583.0" layoutY="56.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="142.0" styleClass="green-button" text="Search File">
+            <Button fx:id="searchBtn" layoutX="579.0" layoutY="36.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="142.0" styleClass="green-button" text="Search File">
                <font>
                   <Font size="14.0" />
                </font>
@@ -101,5 +123,6 @@
          </children>
       </AnchorPane>
       <Button fx:id="logBtn" layoutX="719.0" layoutY="565.0" mnemonicParsing="false" prefHeight="19.0" prefWidth="183.0" styleClass="blue-button" text="Show Log Window" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+      <RadioButton fx:id="wsRB" layoutX="250.0" layoutY="100.0" mnemonicParsing="false" text="Web Services" toggleGroup="$comRBGroup" />
    </children>
 </AnchorPane>

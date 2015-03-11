@@ -2,6 +2,7 @@ package view;
 
 import app.DSManager;
 import app.Node;
+import app.UDPDSManager;
 import app.WebServiceDSManager;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -51,6 +52,8 @@ public class FSViewController implements Initializable {
     VBox fileList;
     @FXML
     Button logBtn;
+    @FXML
+    ToggleGroup comRBGroup;
 
     @FXML
     TableView<Node> routingTable;
@@ -161,7 +164,9 @@ public class FSViewController implements Initializable {
                     filePane.setDisable(true);
                     routingPane.setDisable(true);
 
-                    clearInputs();
+                    searchTF.clear();
+                    fileList.getChildren().clear();
+                    neighbours.clear();
 
                     connectBtn.getStyleClass().remove(connectBtn.getStyleClass().size() - 1);
                     connectBtn.getStyleClass().add("green-button");
@@ -194,15 +199,15 @@ public class FSViewController implements Initializable {
             String nodeIP = nodeIPTF.getText();
             int nodePort = Integer.parseInt(nodePortTF.getText());
 
-//            if ((serverIP.isEmpty()) || (nodeIP.isEmpty())) {
-//                throw new Exception("Empty String");
-//            }
+            RadioButton selectedRB = (RadioButton)comRBGroup.getSelectedToggle();
 
-            //if udp
-//            dsManager = new UDPDSManager(serverIP, serverPort, nodeIP, nodePort, this);
-
-            //if web service
-            dsManager=new WebServiceDSManager(serverIP,serverPort,nodeIP,nodePort,this);
+            if(selectedRB.getId().equals("udpRB")){
+                //if udp
+                dsManager = new UDPDSManager(serverIP, serverPort, nodeIP, nodePort, this);
+            }else {
+                //if web service
+                dsManager=new WebServiceDSManager(serverIP,serverPort,nodeIP,nodePort,this);
+            }
 
             String status = dsManager.start();
             if (status.equals("Successful")) {
@@ -249,10 +254,6 @@ public class FSViewController implements Initializable {
         searchBtn.setDisable(false);
     }
 
-    private void clearInputs() {
-        searchTF.clear();
-        fileList.getChildren().clear();
-    }
 }
 
 class SearchResult {
