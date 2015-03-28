@@ -7,6 +7,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
+import java.io.*;
 import java.util.ArrayList;
 
 /**
@@ -26,6 +27,27 @@ public class Node {
         this.myUsername=myUsername;
         this.files = new ArrayList<String>();
 
+    }
+
+    public static void main(String[] args) {
+
+        String file;
+        file = "queries.txt";
+
+        try{
+            InputStream ips=new FileInputStream(file);
+            InputStreamReader ipsr=new InputStreamReader(ips);
+            BufferedReader br=new BufferedReader(ipsr);
+            String line;
+
+            while ((line=br.readLine())!=null){
+                System.out.print("\"" + line + "\",");
+                          }
+            br.close();
+        }
+        catch (Exception e){
+            System.out.println(e.toString());
+        }
     }
 
     public int getMyDefaultPort() {
@@ -160,10 +182,6 @@ public class Node {
 //        }
 //
 //
-//    }
-
-    public static void main(String[] args){
-
-    }
+//       
 }
 

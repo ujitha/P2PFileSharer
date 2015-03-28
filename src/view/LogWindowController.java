@@ -6,6 +6,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
+
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -39,5 +43,23 @@ public class LogWindowController implements Initializable {
 
     public void appendLog(String logStr){
         logTextArea.appendText(logStr+"\n");
+
+         }
+
+    public void writeToFile(String fileName)
+    {
+        PrintWriter writer = null;
+        try {
+            writer = new PrintWriter(fileName, "UTF-8");
+            writer.println("------------------ "+ fileName+" --------------------");
+            String text = logTextArea.getText();
+            writer.append(text);
+            writer.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
     }
 }

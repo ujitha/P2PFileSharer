@@ -36,7 +36,7 @@ public class WebServiceDSManager extends DSManager {
     public Node node;
     public FileRepo fileRepo;
     private int MY_DEFAUILT_PORT = 6000;
-    private int TIMER_SECONDS = 5;
+    private int TIMER_SECONDS = 2;
     private List<Node> connectedNodeList;
     private List<Node> bsNodeList;
 
@@ -49,6 +49,10 @@ public class WebServiceDSManager extends DSManager {
     private HashMap<String, String[]> queryResults;
     private FSViewController controller;
     private Timer searchTimer;
+    private int globalHopCount=0;
+    private int receivedQs = 0;
+    private int forwardedQs = 0;
+    private int answeredQs = 0;
 
     //For Performance Evaluation
     Long startTime;
@@ -116,8 +120,24 @@ public class WebServiceDSManager extends DSManager {
     // Call from UI to connect
     public String start() {
 
+        answeredQs = 0;
+        receivedQs = 0;
+        forwardedQs = 0;
         String connectResult = this.connectToBS();
         return connectResult;
+
+    }
+
+
+    public void printQueryValues()
+    {
+        controller.writeToLog("Answered Querys - "+answeredQs);
+        controller.writeToLog("Forwarded Querys - "+forwardedQs);
+        controller.writeToLog("Received Querys - "+receivedQs);
+
+        answeredQs = 0;
+        forwardedQs = 0;
+        receivedQs = 0;
 
     }
 
@@ -143,6 +163,8 @@ public class WebServiceDSManager extends DSManager {
             processLeaveMsg(leaveMsg);
 
         } else if (incomingMsg instanceof Search) {
+            receivedQs++;
+
             Search searchMsg = (Search) incomingMsg;
             processSearchMsg(searchMsg);
 
@@ -152,6 +174,7 @@ public class WebServiceDSManager extends DSManager {
 
             if (isTimerOn) {
                 int ackValue = searchAck.getNoOfFiles();
+                globalHopCount += searchAck.getHops();
                 stopTimer();
 
                 if ((ackValue > 0)&&(ackValue < 9998)) {
@@ -210,6 +233,7 @@ public class WebServiceDSManager extends DSManager {
     // Process Search Message
     private void processSearchMsg(Search searchMsg) {
 
+
         int hopSize = searchMsg.getHops();
         String ip = searchMsg.getIp();
         String port = searchMsg.getPort();
@@ -218,20 +242,21 @@ public class WebServiceDSManager extends DSManager {
 
         //if the search request is sent by myself, ignore it
         if(ip.equals(node.getMyIp()) && port.equals(Integer.toString(node.getMyDefaultPort()))){
+            globalHopCount += TOTAL_HOP_COUNT - hopSize;
             return;
         }
 
         if (!results.isEmpty()) {
 
             Message searchAck = new AckSearch(results.size(), node.getMyIp(), Integer.toString(node.getMyDefaultPort()), TOTAL_HOP_COUNT - hopSize, results.toArray(new String[results.size()]));
-
+            answeredQs++;
             new WebServiceClient().sendMessage(ip, Integer.parseInt(port), searchAck);
 
         } else {
 
-            if (hopSize == 0) {
+            if (hopSize <= 0) {
                 Message searchAck = new AckSearch(0, node.getMyIp(), Integer.toString(node.getMyDefaultPort()), TOTAL_HOP_COUNT - hopSize, results.toArray(new String[results.size()]));
-
+                answeredQs++;
                 new WebServiceClient().sendMessage(ip, Integer.parseInt(port), searchAck);
 
             } else {
@@ -243,6 +268,7 @@ public class WebServiceDSManager extends DSManager {
                 }
 
                 ArrayList<Integer> sentNodes = new ArrayList<Integer>();
+                searchMsg.reduceHopCount();
                 while (nodeCount > 0) {
                     int nodeId = random.nextInt(nodeSize);
                     boolean hasId = false;
@@ -256,8 +282,8 @@ public class WebServiceDSManager extends DSManager {
                     if (!hasId) {
                         String nodeIp = connectedNodeList.get(nodeId).getMyIp();
                         int nodePort = connectedNodeList.get(nodeId).getMyDefaultPort();
-                        searchMsg.reduceHopCount();
-
+                        sentNodes.add(nodeId);
+                        forwardedQs++;
                         new WebServiceClient().sendMessage(nodeIp, nodePort, searchMsg);
                         nodeCount--;
                     }
@@ -395,8 +421,11 @@ public class WebServiceDSManager extends DSManager {
     // calls from ui to check from node's file list, otherwise send to other nodes
     public void getQueryResults(String query) {
 
+        controller.writeToLog("-----------------New Search Query - "+query+" -------------------");
+        globalHopCount = 0;
         controller.writeToLog("Searched for : "+query);
         startTime = System.currentTimeMillis();
+        endTime = 0L;
 
         boolean hasFile = false;
         ArrayList<String> results = node.isFileInRepo(query);
@@ -443,6 +472,7 @@ public class WebServiceDSManager extends DSManager {
             }
 
             if (!hasId) {
+                sentNodes.add(nodeId);
                 String nodeIp = connectedNodeList.get(nodeId).getMyIp();
                 int nodePort = connectedNodeList.get(nodeId).getMyDefaultPort();
                 Message searchMsg = new Search(node.getMyIp(), Integer.toString(node.getMyDefaultPort()), query, TOTAL_HOP_COUNT);
@@ -468,6 +498,7 @@ public class WebServiceDSManager extends DSManager {
                             endTime = System.currentTimeMillis();
                         }
                         controller.writeToLog("Search time : "+(endTime-startTime)+"ms");
+                        controller.writeToLog("Total Hop count : "+(globalHopCount));
                         controller.showSearchResults(queryResults, 3);
                     }
                 });
