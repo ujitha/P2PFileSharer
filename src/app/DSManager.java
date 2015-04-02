@@ -11,4 +11,5 @@ public abstract class DSManager {
     public abstract ArrayList<String> getNodeFileList();
     public abstract String start();
     public abstract void getQueryResults(String query);
+    public abstract void printQueryValues();
 }

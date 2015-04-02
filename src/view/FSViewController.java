@@ -35,7 +35,7 @@ public class FSViewController implements Initializable {
     @FXML
     AnchorPane routingPane;
     @FXML
-    Button connectBtn;
+    Button connectBtn, executeBtn, printBtn;
     @FXML
     TextField serverIPTF;
     @FXML
@@ -71,10 +71,12 @@ public class FSViewController implements Initializable {
     private ObservableList<Node> neighbours;
     private DSManager dsManager;
     private String lastQuery = "";
+    private int queryCounter = 0;
+    private boolean executing = false;
 
 
     @Override
-    public void initialize(URL url, ResourceBundle resourceBundle){
+    public void initialize(URL url, ResourceBundle resourceBundle) {
 
         popupCreator = new PopupCreator();
         neighbours = FXCollections.observableArrayList();
@@ -82,12 +84,12 @@ public class FSViewController implements Initializable {
         try {
             Enumeration e1 = NetworkInterface.getNetworkInterfaces();
             ObservableList<String> ips = FXCollections.observableArrayList();
-            while(e1.hasMoreElements()) {
-                NetworkInterface n = (NetworkInterface)e1.nextElement();
+            while (e1.hasMoreElements()) {
+                NetworkInterface n = (NetworkInterface) e1.nextElement();
                 Enumeration e2 = n.getInetAddresses();
                 while (e2.hasMoreElements()) {
-                    InetAddress iNetAdd = (InetAddress)e2.nextElement();
-                    if(iNetAdd instanceof Inet4Address){
+                    InetAddress iNetAdd = (InetAddress) e2.nextElement();
+                    if (iNetAdd instanceof Inet4Address) {
                         ips.add(iNetAdd.getHostAddress());
                     }
                 }
@@ -148,6 +150,23 @@ public class FSViewController implements Initializable {
     }
 
     private void setHandlers() {
+
+        executeBtn.setOnAction((event) -> {
+                    queryCounter = 0;
+                    executing = true;
+                    executeSearchQueries();
+
+                }
+
+        );
+
+        printBtn.setOnAction((event) -> {
+
+                    dsManager.printQueryValues();
+                }
+
+        );
+
         connectBtn.setOnAction((event) -> {
             connectBtn.setDisable(true);
 
@@ -216,6 +235,27 @@ public class FSViewController implements Initializable {
         });
     }
 
+    private void executeSearchQueries() {
+
+        String[] queries = new String[]{"Twilight", "Jack", "American Idol", "Happy Feet", "Twilight saga", "Happy Feet", "Happy Feet", "Feet", "Happy Feet", "Twilight", "Windows", "Happy Feet", "Mission Impossible", "Twilight", "Windows 8", "The", "Happy", "Windows 8", "Happy Feet", "Super Mario", "Jack and Jill", "Happy Feet", "Impossible", "Happy Feet", "Turn Up The Music", "Adventures of Tintin", "Twilight saga", "Happy Feet", "Super Mario", "American Pickers", "Microsoft Office 2010", "Twilight", "Modern Family", "Jack and Jill", "Jill", "Glee", "The Vampire Diarie", "King Arthur", "Jack and Jill", "King Arthur", "Windows XP", "Harry Potter", "Feet", "Kung Fu Panda", "Lady Gaga", "Gaga", "Happy Feet", "Twilight", "Hacking", "King"};
+
+        if (queries.length > queryCounter) {
+            System.out.println("Sent - "+queries[queryCounter]);
+            lastQuery = queries[queryCounter++];
+            dsManager.getQueryResults(lastQuery);
+
+        }
+
+
+
+        if(queryCounter == queries.length)
+        {
+            executing = false;
+        }
+
+
+    }
+
     private boolean connectToNetwork() {
         try {
             String serverIP = serverIPTF.getText();
@@ -223,14 +263,14 @@ public class FSViewController implements Initializable {
             String nodeIP = nodeIPCB.getValue();
             int nodePort = Integer.parseInt(nodePortTF.getText());
 
-            RadioButton selectedRB = (RadioButton)comRBGroup.getSelectedToggle();
+            RadioButton selectedRB = (RadioButton) comRBGroup.getSelectedToggle();
 
-            if(selectedRB.getId().equals("udpRB")){
+            if (selectedRB.getId().equals("udpRB")) {
                 //if udp
                 dsManager = new UDPDSManager(serverIP, serverPort, nodeIP, nodePort, this);
-            }else {
+            } else {
                 //if web service
-                dsManager=new WebServiceDSManager(serverIP,serverPort,nodeIP,nodePort,this);
+                dsManager = new WebServiceDSManager(serverIP, serverPort, nodeIP, nodePort, this);
             }
 
             String status = dsManager.start();
@@ -247,7 +287,7 @@ public class FSViewController implements Initializable {
     }
 
     public boolean disconnectFromNetwork() {
-        if(connected) {
+        if (connected) {
             dsManager.sendLeaveMessages();
             connected = false;
         }
@@ -262,8 +302,11 @@ public class FSViewController implements Initializable {
         }
     }
 
-    public void writeToLog(String str){
+    public void writeToLog(String str) {
         this.logCtrl.appendLog(str);
+
+
+
     }
 
     /*
@@ -273,11 +316,17 @@ public class FSViewController implements Initializable {
      */
     public void showSearchResults(HashMap<String, String[]> results, int status) {
 
-        popupCreator.showSearchResults(lastQuery,results,status);
-        if(status == 3){
+        popupCreator.showSearchResults(lastQuery, results, status);
+        if (status == 3) {
             searchBtn.setText("Search File");
             searchTF.setDisable(false);
             searchBtn.setDisable(false);
+
+            logCtrl.writeToFile(lastQuery);
+            if(executing)
+            {
+                executeSearchQueries();
+            }
         }
 //        if(results.isEmpty()){
 //            popupCreator.showInfoDialog("No files found", "No files matching \'"+lastQuery+"\' found!");
