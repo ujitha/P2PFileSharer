@@ -1,10 +1,8 @@
-package p2pFilesharer.webservice.server;
+package webservice.server;
 
 import app.DSManager;
 
-
 import javax.xml.ws.Endpoint;
-import java.util.ArrayList;
 
 /**
  * Created by ujitha on 3/11/15.
@@ -12,7 +10,7 @@ import java.util.ArrayList;
 public class ServicePublisher {
     Endpoint e;
     public ServicePublisher(String ip,String port, DSManager dsManager){
-        String address = "http://"+ip+":"+port+"/p2pFilesharer.webservice.server.ServiceReceiver";
+        String address = "http://"+ip+":"+port+"/webservice.server.ServiceReceiver";
         e= Endpoint.publish(address, new ServiceReceiverImpl(dsManager));
         System.out.println("Service is published : "+address);
     }

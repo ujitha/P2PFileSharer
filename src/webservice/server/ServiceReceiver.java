@@ -1,4 +1,4 @@
-package p2pFilesharer.webservice.server;
+package webservice.server;
 
 import javax.jws.WebMethod;
 import javax.jws.WebService;

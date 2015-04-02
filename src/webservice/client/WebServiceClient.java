@@ -1,13 +1,14 @@
-package p2pFilesharer.webservice.client;
+package webservice.client;
 
 import communicator.messages.Message;
-import p2pFilesharer.webservice.stub.ServiceReceiver;
-//import p2pFilesharer.webservice.server.ServiceReceiver;
+//import webservice.stub.ServiceReceiver;
 
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import webservice.server.ServiceReceiver;
 
 /**
  * Created by ujitha on 3/11/15.
@@ -16,7 +17,7 @@ public class WebServiceClient {
 
     public void sendMessage(String destinationIp, int port, Message message){
 
-        String address="http://"+destinationIp+":"+port+"/p2pFilesharer.webservice.server.ServiceReceiver?wsdl";
+        String address="http://"+destinationIp+":"+port+"/webservice.server.ServiceReceiver?wsdl";
 
         URL url = null;
         try {
@@ -25,7 +26,7 @@ public class WebServiceClient {
             e.printStackTrace();
         }
 
-        QName qname = new QName("http://server.webservice.p2pFilesharer/", "ServiceReceiverImplService");
+        QName qname = new QName("http://server.webservice/", "ServiceReceiverImplService");
         Service service = Service.create(url, qname);
         ServiceReceiver serviceReceiver=service.getPort(ServiceReceiver.class);
 

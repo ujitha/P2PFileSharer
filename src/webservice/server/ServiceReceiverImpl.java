@@ -1,4 +1,4 @@
-package p2pFilesharer.webservice.server;
+package webservice.server;
 
 import app.DSManager;
 import app.WebServiceDSManager;
@@ -9,7 +9,7 @@ import javax.jws.WebService;
  * Created by ujitha on 3/11/15.
  */
 
-@WebService(endpointInterface = "p2pFilesharer.webservice.server.ServiceReceiver")
+@WebService(endpointInterface = "webservice.server.ServiceReceiver")
 public class ServiceReceiverImpl implements ServiceReceiver {
     DSManager dsManager;
 

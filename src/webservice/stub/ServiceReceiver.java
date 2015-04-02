@@ -1,5 +1,5 @@
 
-package p2pFilesharer.webservice.stub;
+package webservice.stub;
 
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
@@ -14,7 +14,7 @@ import javax.xml.ws.Action;
  * Generated source version: 2.2
  * 
  */
-@WebService(name = "ServiceReceiver", targetNamespace = "http://server.webservice.p2pFilesharer/")
+@WebService(name = "ServiceReceiver", targetNamespace = "http://server.webservice/")
 @SOAPBinding(style = SOAPBinding.Style.RPC)
 public interface ServiceReceiver {
 
@@ -24,9 +24,9 @@ public interface ServiceReceiver {
      * @param arg0
      */
     @WebMethod
-    @Action(input = "http://server.webservice.p2pFilesharer/ServiceReceiver/sendMessageRequest", output = "http://server.webservice.p2pFilesharer/ServiceReceiver/sendMessageResponse")
+    @Action(input = "http://server.webservice/ServiceReceiver/sendMessageRequest", output = "http://server.webservice.p2pFilesharer/ServiceReceiver/sendMessageResponse")
     public void sendMessage(
-        @WebParam(name = "arg0", partName = "arg0")
-        String arg0);
+            @WebParam(name = "arg0", partName = "arg0")
+            String arg0);
 
 }

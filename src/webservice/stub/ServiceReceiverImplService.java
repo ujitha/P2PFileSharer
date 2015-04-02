@@ -1,14 +1,10 @@
 
-package p2pFilesharer.webservice.stub;
+package webservice.stub;
 
+import javax.xml.namespace.QName;
+import javax.xml.ws.*;
 import java.net.MalformedURLException;
 import java.net.URL;
-import javax.xml.namespace.QName;
-import javax.xml.ws.Service;
-import javax.xml.ws.WebEndpoint;
-import javax.xml.ws.WebServiceClient;
-import javax.xml.ws.WebServiceException;
-import javax.xml.ws.WebServiceFeature;
 
 
 /**
@@ -17,7 +13,7 @@ import javax.xml.ws.WebServiceFeature;
  * Generated source version: 2.2
  * 
  */
-@WebServiceClient(name = "ServiceReceiverImplService", targetNamespace = "http://server.webservice.p2pFilesharer/", wsdlLocation = "file:///home/visiri/IdeaProjects/P2PFileSharer/Webservice/src/p2pFilesharer/webservice/p2pFilesharer/webservice/stub/p2pFilesharer.webservice.server.ServiceReceiver.wsdl")
+@WebServiceClient(name = "ServiceReceiverImplService", targetNamespace = "http://server.webservice/", wsdlLocation = "file:///home/visiri/IdeaProjects/P2PFileSharer/Webservice/src/p2pFilesharer/webservice/p2pFilesharer/webservice/stub/p2pFilesharer.webservice.server.ServiceReceiver.wsdl")
 public class ServiceReceiverImplService
     extends Service
 {
@@ -73,7 +69,7 @@ public class ServiceReceiverImplService
     }
 
     /**
-     * 
+     *
      * @param features
      *     A list of {@link javax.xml.ws.WebServiceFeature} to configure on the proxy.  Supported features not in the <code>features</code> parameter will have their default values.
      * @return

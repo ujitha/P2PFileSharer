@@ -19,8 +19,8 @@ import communicator.messages.register.Unregister;
 import communicator.messages.search.AckSearch;
 import communicator.messages.search.Search;
 import javafx.application.Platform;
-import p2pFilesharer.webservice.client.WebServiceClient;
-import p2pFilesharer.webservice.server.ServicePublisher;
+import webservice.client.WebServiceClient;
+import webservice.server.ServicePublisher;
 import view.FSViewController;
 
 import java.io.IOException;
