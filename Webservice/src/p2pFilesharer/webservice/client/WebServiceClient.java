@@ -1,7 +1,8 @@
 package p2pFilesharer.webservice.client;
 
 import communicator.messages.Message;
-import p2pFilesharer.webservice.server.ServiceReceiver;
+import p2pFilesharer.webservice.stub.ServiceReceiver;
+//import p2pFilesharer.webservice.server.ServiceReceiver;
 
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;

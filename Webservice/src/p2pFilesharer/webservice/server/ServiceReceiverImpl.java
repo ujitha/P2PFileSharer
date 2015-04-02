@@ -21,7 +21,7 @@ public class ServiceReceiverImpl implements ServiceReceiver {
 
     @Override
     public void sendMessage(String message) {
-        //TODO pass the message to DSmanager
+
         ((WebServiceDSManager)dsManager).receiveMessage(message);
     }
 }

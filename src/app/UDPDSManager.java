@@ -233,7 +233,7 @@ public class UDPDSManager extends DSManager {
 
         } else {
 
-            if (hopSize == 0) {
+            if (hopSize <= 0) {
                 Message searchAck = new AckSearch(0, node.getMyIp(), Integer.toString(node.getMyDefaultPort()), TOTAL_HOP_COUNT - hopSize, results.toArray(new String[results.size()]));
                 UDPClient messageClient = new UDPClient();
                 messageClient.sendMessage(ip, Integer.parseInt(port), searchAck);
@@ -247,6 +247,7 @@ public class UDPDSManager extends DSManager {
                 }
 
                 ArrayList<Integer> sentNodes = new ArrayList<Integer>();
+                searchMsg.reduceHopCount();
                 while (nodeCount > 0) {
                     int nodeId = random.nextInt(nodeSize);
                     boolean hasId = false;
@@ -260,7 +261,7 @@ public class UDPDSManager extends DSManager {
                     if (!hasId) {
                         String nodeIp = connectedNodeList.get(nodeId).getMyIp();
                         int nodePort = connectedNodeList.get(nodeId).getMyDefaultPort();
-                        searchMsg.reduceHopCount();
+                        sentNodes.add(nodeId);
                         UDPClient messageClient = new UDPClient();
                         messageClient.sendMessage(nodeIp, nodePort, searchMsg);
                         nodeCount--;
@@ -446,6 +447,7 @@ public class UDPDSManager extends DSManager {
             }
 
             if (!hasId) {
+                sentNodes.add(nodeId);
                 String nodeIp = connectedNodeList.get(nodeId).getMyIp();
                 int nodePort = connectedNodeList.get(nodeId).getMyDefaultPort();
                 Message searchMsg = new Search(node.getMyIp(), Integer.toString(node.getMyDefaultPort()), query, TOTAL_HOP_COUNT);
