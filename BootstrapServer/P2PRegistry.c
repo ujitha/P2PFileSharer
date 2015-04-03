@@ -298,8 +298,8 @@ int sendpeerlist(int sockfd, char key[8])
             if((peer_table[i].valid == 1) && (strcmp(peer_table[i].key, key) != 0))
             {
                 retvalue = sprintf(tmpmsg, " %s %d %s", peer_table[i].IP, peer_table[i].port, peer_table[i].key);
-                memcpy(&message[msglen], tmpmsg, (strlen(tmpmsg) - 1));
-                msglen += (strlen(tmpmsg) - 1);
+                memcpy(&message[msglen], tmpmsg, (strlen(tmpmsg) ));
+                msglen += (strlen(tmpmsg) );
             }
         }
         sprintf(tmpmsglen,"%04d", msglen); //Don't send the last zero
@@ -308,6 +308,7 @@ int sendpeerlist(int sockfd, char key[8])
         message[2] = tmpmsglen[2];
         message[3] = tmpmsglen[3];
     }
+    printf("\nmessage %s\n",message);
     numbytessend = send(sockfd, message, msglen, 0);
     if(numbytessend <= 0)
         perror("ERROR: \n");
