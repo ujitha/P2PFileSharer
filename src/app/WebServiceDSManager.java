@@ -44,7 +44,7 @@ public class WebServiceDSManager extends DSManager {
     private ServicePublisher servicePublisher;
 
 
-    private int TOTAL_HOP_COUNT = 8;
+    private int TOTAL_HOP_COUNT = 5;
     private boolean isTimerOn = false;
     private HashMap<String, String[]> queryResults;
     private FSViewController controller;
@@ -53,6 +53,7 @@ public class WebServiceDSManager extends DSManager {
     private int receivedQs = 0;
     private int forwardedQs = 0;
     private int answeredQs = 0;
+    private int routingMsgs =0;
 
     //For Performance Evaluation
     Long startTime;
@@ -78,9 +79,7 @@ public class WebServiceDSManager extends DSManager {
         this.bootStrapPort = bootStrapPort;
         this.controller = controller;
 
-        String username = "user:" + myIp + myPort;
-        username = username.substring(username.length() - 7, username.length());
-        node = new Node(myIp, myPort, username);
+        node = new Node(myIp, myPort, generateUserName(myIp));
         fileRepo = new FileRepo();
         addFilesToNode();
         this.connectedNodeList = new ArrayList<Node>();
@@ -92,9 +91,11 @@ public class WebServiceDSManager extends DSManager {
 
         Message unregMessage = new Unregister(node.getMyIp(), Integer.toString(node.getMyDefaultPort()), node.getMyUsername());
         MessageClient messageClient = new MessageClient();
+        System.out.println(unregMessage.toString());
 
         try {
             messageClient.sendMessage(bootStrapIp, bootStrapPort, unregMessage);
+            routingMsgs++;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -105,6 +106,7 @@ public class WebServiceDSManager extends DSManager {
             String nodePort = Integer.toString(connectedNodeList.get(i).getMyDefaultPort());
             Message leaveMsg = new Leave(node.getMyIp(), Integer.toString(node.getMyDefaultPort()));
             new WebServiceClient().sendMessage(nodeIp, Integer.parseInt(nodePort), leaveMsg);
+            routingMsgs++;
         }
 
         connectedNodeList.clear();
@@ -123,6 +125,7 @@ public class WebServiceDSManager extends DSManager {
         answeredQs = 0;
         receivedQs = 0;
         forwardedQs = 0;
+        routingMsgs=0;
         String connectResult = this.connectToBS();
         return connectResult;
 
@@ -134,10 +137,11 @@ public class WebServiceDSManager extends DSManager {
         controller.writeToLog("Answered Querys - "+answeredQs);
         controller.writeToLog("Forwarded Querys - "+forwardedQs);
         controller.writeToLog("Received Querys - "+receivedQs);
+        controller.writeToLog("Routing Querys - "+routingMsgs);
+        controller.writeToLog("Routing Table Size - "+connectedNodeList.size());
+        controller.writeToFile(node.getMyIp()+"-"+node.getMyUsername());
 
-        answeredQs = 0;
-        forwardedQs = 0;
-        receivedQs = 0;
+
 
     }
 
@@ -149,9 +153,11 @@ public class WebServiceDSManager extends DSManager {
         if (incomingMsg instanceof Join) {
             Join joinNode = (Join) incomingMsg;
             processJoinMsg(joinNode);
+            routingMsgs++;
 
         } else if (incomingMsg instanceof AckLeave) {
             AckLeave leaveMsg = (AckLeave) incomingMsg;
+            routingMsgs++;
             int leaveValue = leaveMsg.getValue();
             if (leaveValue == 0) {
                 //ok to leave
@@ -161,6 +167,7 @@ public class WebServiceDSManager extends DSManager {
         } else if (incomingMsg instanceof Leave) {
             Leave leaveMsg = (Leave) incomingMsg;
             processLeaveMsg(leaveMsg);
+            routingMsgs++;
 
         } else if (incomingMsg instanceof Search) {
             receivedQs++;
@@ -179,6 +186,7 @@ public class WebServiceDSManager extends DSManager {
 
                 if ((ackValue > 0)&&(ackValue < 9998)) {
                     endTime = System.currentTimeMillis();
+                    controller.writeToLog("First Search time : "+(endTime-startTime)+"ms");
                     String ip = searchAck.getIp();
                     String[] results = searchAck.getFileNames();
                     queryResults.put(ip, results);
@@ -192,7 +200,7 @@ public class WebServiceDSManager extends DSManager {
         } else if (incomingMsg instanceof AckJoin) {
 
             AckJoin ackJoin = (AckJoin) incomingMsg;
-
+            routingMsgs++;
             int value = ackJoin.getValue();
             String ip = ackJoin.getIp();
             int port = Integer.parseInt(ackJoin.getPort());
@@ -204,7 +212,7 @@ public class WebServiceDSManager extends DSManager {
                         connectedNodeList.add(bsNodeList.get(i));
                         controller.addNeighbour(bsNodeList.get(i));
                     }
-                    bsNodeList.remove(i);
+
                 }
             }
 
@@ -312,7 +320,7 @@ public class WebServiceDSManager extends DSManager {
         Message leaveAck = new AckLeave(leaveValue,node.getMyIp(),Integer.toString(node.getMyDefaultPort()));
 
         new WebServiceClient().sendMessage(nodeIp, Integer.parseInt(nodePort), leaveAck);
-        servicePublisher.stopService();
+
     }
 
     private boolean addNodeToList(Node node) {
@@ -342,13 +350,14 @@ public class WebServiceDSManager extends DSManager {
 
         try {
             String receivedMessage = messageClient.sendMessage(bootStrapIp, bootStrapPort, registerMsg);
+            routingMsgs++;
             MessageDecoder messageDecoder = new MessageDecoder();
             Message message = messageDecoder.decodeMessage(receivedMessage);
 
             if (message instanceof AckRegister) {
                 AckRegister ackRegister = (AckRegister) message;
                 int ackValue = ackRegister.getNoNodes();
-
+                routingMsgs++;
 
                 switch (ackValue) {
                     case 9999:
@@ -404,7 +413,15 @@ public class WebServiceDSManager extends DSManager {
 
             Message joinMsg = new Join(node.getMyIp(), Integer.toString(node.getMyDefaultPort()), node.getMyUsername());
 
-            new WebServiceClient().sendMessage(nodeIp, nodePort, joinMsg);
+            try
+            {
+                new WebServiceClient().sendMessage(nodeIp, nodePort, joinMsg);
+                routingMsgs++;
+            }
+            catch(Exception e)
+            {
+                e.printStackTrace();
+            }
 
         }
 
@@ -454,7 +471,8 @@ public class WebServiceDSManager extends DSManager {
             if(endTime<startTime){
                 endTime = System.currentTimeMillis();
             }
-            controller.writeToLog("Search time : "+(endTime-startTime)+"ms");
+            controller.writeToLog("Total Search time : "+(endTime-startTime)+"ms");
+            controller.writeToLog("Total Hop count : "+(globalHopCount));
             controller.showSearchResults(queryResults, 3);
         }
 
@@ -497,7 +515,7 @@ public class WebServiceDSManager extends DSManager {
                         if(endTime<startTime){
                             endTime = System.currentTimeMillis();
                         }
-                        controller.writeToLog("Search time : "+(endTime-startTime)+"ms");
+                        controller.writeToLog("Total Search time : "+(endTime-startTime)+"ms");
                         controller.writeToLog("Total Hop count : "+(globalHopCount));
                         controller.showSearchResults(queryResults, 3);
                     }

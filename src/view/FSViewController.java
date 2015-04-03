@@ -103,9 +103,11 @@ public class FSViewController implements Initializable {
 
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                serverIPTF.setText(newValue);
+               // serverIPTF.setText(newValue);
+
             }
         });
+        serverIPTF.setText("10.8.98.24");
         nodeIPCB.getSelectionModel().selectFirst();
         serverPortTF.setText("5001");
         nodePortTF.setText("5100");
@@ -316,13 +318,17 @@ public class FSViewController implements Initializable {
      */
     public void showSearchResults(HashMap<String, String[]> results, int status) {
 
-        popupCreator.showSearchResults(lastQuery, results, status);
+
+
+            popupCreator.showSearchResults(lastQuery, results, status);
+
+
         if (status == 3) {
             searchBtn.setText("Search File");
             searchTF.setDisable(false);
             searchBtn.setDisable(false);
 
-            logCtrl.writeToFile(lastQuery);
+
             if(executing)
             {
                 executeSearchQueries();
@@ -335,6 +341,11 @@ public class FSViewController implements Initializable {
 //            popupCreator.showSearchResults(lastQuery, results);
 //        }
 
+    }
+
+    public void writeToFile(String nodeName)
+    {
+        logCtrl.writeToFile(nodeName);
     }
 
 }

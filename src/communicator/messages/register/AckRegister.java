@@ -152,11 +152,11 @@ public class AckRegister extends Message {
     }
 
 
-//    public static void main(String[] args) {
-//        String s= "0015 REGOK 9996";
-//        //"0059 REGOK 2 129.82.123.45 5001 abc 64.12.123.190 34001 pqr";
-//        //"0095 REGOK 4 129.82.123.45 5001 abc 64.12.123.190 34001 pqr 1.1.1.1 1111 abc2 1.1.1.1 1111 abc3";
-//        AckRegister a=new AckRegister(s);
-//        System.out.println(a.toString());
-//    }
+    public static void main(String[] args) {
+        String s= //"0106 REGOK 4 10.8.98.40 5100 .40510 10.8.98.45 5100 .45510 10.8.108.235 5100 235510 10.8.98.24. 5100 .24510";
+        "0059 REGOK 2 129.82.123.45 5001 abc 64.12.123.190 34001 pqr";
+        //"0095 REGOK 4 129.82.123.45 5001 abc 64.12.123.190 34001 pqr 1.1.1.1 1111 abc2 1.1.1.1 1111 abc3";
+        AckRegister a=new AckRegister(s);
+        System.out.println(a.toString());
+    }
 }

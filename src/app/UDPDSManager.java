@@ -37,7 +37,7 @@ public class UDPDSManager extends DSManager {
     private List<Node> bsNodeList;
     private List<Node> connectedNodeList;
     private UDPserver server;
-    private int TOTAL_HOP_COUNT = 8;
+    private int TOTAL_HOP_COUNT = 5;
     private boolean isTimerOn = false;
     private HashMap<String, String[]> queryResults;
     private FSViewController controller;
@@ -46,6 +46,7 @@ public class UDPDSManager extends DSManager {
     private int receivedQs = 0;
     private int forwardedQs = 0;
     private int answeredQs = 0;
+    private int routingMsgs = 0;
 
 
     //For Performance Evaluation
@@ -72,9 +73,8 @@ public class UDPDSManager extends DSManager {
         this.bootStrapPort = bootStrapPort;
         this.controller = controller;
 
-        String username = "user:" + myIp + myPort;
-        username = username.substring(username.length() - 7, username.length());
-        node = new Node(myIp, myPort, username);
+
+        node = new Node(myIp, myPort, generateUserName(myIp));
         fileRepo = new FileRepo();
         addFilesToNode();
         this.bsNodeList = new ArrayList<Node>();
@@ -87,6 +87,7 @@ public class UDPDSManager extends DSManager {
 
         Message unregMessage = new Unregister(node.getMyIp(), Integer.toString(node.getMyDefaultPort()), node.getMyUsername());
         MessageClient messageClient = new MessageClient();
+        routingMsgs++;
 
         try {
             messageClient.sendMessage(bootStrapIp, bootStrapPort, unregMessage);
@@ -101,6 +102,7 @@ public class UDPDSManager extends DSManager {
             Message leaveMsg = new Leave(node.getMyIp(), Integer.toString(node.getMyDefaultPort()));
             UDPClient udpClient = new UDPClient();
             udpClient.sendMessage(nodeIp, Integer.parseInt(nodePort), leaveMsg);
+            routingMsgs++;
 
         }
 
@@ -114,10 +116,9 @@ public class UDPDSManager extends DSManager {
         controller.writeToLog("Answered Querys - "+answeredQs);
         controller.writeToLog("Forwarded Querys - "+forwardedQs);
         controller.writeToLog("Received Querys - "+receivedQs);
+        controller.writeToLog("Routing Querys - "+routingMsgs);
+        controller.writeToLog("Routing Table Size - "+connectedNodeList.size());
 
-        answeredQs = 0;
-        forwardedQs = 0;
-        receivedQs = 0;
 
     }
 
@@ -132,6 +133,7 @@ public class UDPDSManager extends DSManager {
         answeredQs = 0;
         receivedQs = 0;
         forwardedQs = 0;
+        routingMsgs = 0;
 
         server = new UDPserver(node.getMyIp(), node.getMyDefaultPort(), new MessageCallback() {
             @Override
@@ -143,11 +145,13 @@ public class UDPDSManager extends DSManager {
 
                 if (incomingMsg instanceof Join) {
                     Join joinNode = (Join) incomingMsg;
+                    routingMsgs++;
                     processJoinMsg(joinNode);
 
                 } else if (incomingMsg instanceof AckLeave) {
 
                     AckLeave leaveMsg = (AckLeave) incomingMsg;
+                    routingMsgs++;
                     int leaveValue = leaveMsg.getValue();
                     if (leaveValue == 0) {
                         //ok to leave
@@ -156,7 +160,9 @@ public class UDPDSManager extends DSManager {
                     }
 
                 } else if (incomingMsg instanceof Leave) {
+
                     Leave leaveMsg = (Leave) incomingMsg;
+                    routingMsgs++;
                     processLeaveMsg(leaveMsg);
 
                 } else if (incomingMsg instanceof Search) {
@@ -175,6 +181,7 @@ public class UDPDSManager extends DSManager {
 
                         if ((ackValue > 0)&&(ackValue < 9998)) {
                             endTime = System.currentTimeMillis();
+                            controller.writeToLog("First Search time : "+(endTime-startTime)+"ms");
                             String ip = searchAck.getIp();
                             String[] results = searchAck.getFileNames();
                             queryResults.put(ip, results);
@@ -188,6 +195,7 @@ public class UDPDSManager extends DSManager {
                 } else if (incomingMsg instanceof AckJoin) {
 
                     AckJoin ackJoin = (AckJoin) incomingMsg;
+                    routingMsgs++;
 
                     int value = ackJoin.getValue();
                     String ip = ackJoin.getIp();
@@ -200,7 +208,7 @@ public class UDPDSManager extends DSManager {
                                 connectedNodeList.add(bsNodeList.get(i));
                                 controller.addNeighbour(bsNodeList.get(i));
                             }
-                            bsNodeList.remove(i);
+                           
                         }
                     }
 
@@ -349,13 +357,14 @@ public class UDPDSManager extends DSManager {
 
         try {
             String receivedMessage = messageClient.sendMessage(bootStrapIp, bootStrapPort, registerMsg);
+            routingMsgs++;
             MessageDecoder messageDecoder = new MessageDecoder();
             Message message = messageDecoder.decodeMessage(receivedMessage);
 
             if (message instanceof AckRegister) {
                 AckRegister ackRegister = (AckRegister) message;
                 int ackValue = ackRegister.getNoNodes();
-
+                routingMsgs++;
 
                 switch (ackValue) {
                     case 9999:
@@ -410,6 +419,7 @@ public class UDPDSManager extends DSManager {
 
             Message joinMsg = new Join(node.getMyIp(), Integer.toString(node.getMyDefaultPort()), node.getMyUsername());
             UDPClient messageClient = new UDPClient();
+            routingMsgs++;
 
             messageClient.sendMessage(nodeIp, nodePort, joinMsg);
 
@@ -459,7 +469,8 @@ public class UDPDSManager extends DSManager {
             if(endTime<startTime){
                 endTime = System.currentTimeMillis();
             }
-            controller.writeToLog("Search time : "+(endTime-startTime)+"ms");
+            controller.writeToLog("Total Search time : "+(endTime-startTime)+"ms");
+            controller.writeToLog("Total Hop count : "+(globalHopCount));
             controller.showSearchResults(queryResults, 3);
         }
 
@@ -502,7 +513,7 @@ public class UDPDSManager extends DSManager {
                         if(endTime<startTime){
                             endTime = System.currentTimeMillis();
                         }
-                        controller.writeToLog("Search time : "+(endTime-startTime)+"ms");
+                        controller.writeToLog("Total Search time : "+(endTime-startTime)+"ms");
                         controller.writeToLog("Total Hop count : "+(globalHopCount));
                         controller.showSearchResults(queryResults, 3);
                     }
