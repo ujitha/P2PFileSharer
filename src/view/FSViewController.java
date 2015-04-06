@@ -103,11 +103,11 @@ public class FSViewController implements Initializable {
 
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-               // serverIPTF.setText(newValue);
+                serverIPTF.setText(newValue);
 
             }
         });
-        serverIPTF.setText("10.8.98.24");
+//        serverIPTF.setText("10.8.98.24");
         nodeIPCB.getSelectionModel().selectFirst();
         serverPortTF.setText("5001");
         nodePortTF.setText("5100");
@@ -241,21 +241,18 @@ public class FSViewController implements Initializable {
 
         String[] queries = new String[]{"Twilight", "Jack", "American Idol", "Happy Feet", "Twilight saga", "Happy Feet", "Happy Feet", "Feet", "Happy Feet", "Twilight", "Windows", "Happy Feet", "Mission Impossible", "Twilight", "Windows 8", "The", "Happy", "Windows 8", "Happy Feet", "Super Mario", "Jack and Jill", "Happy Feet", "Impossible", "Happy Feet", "Turn Up The Music", "Adventures of Tintin", "Twilight saga", "Happy Feet", "Super Mario", "American Pickers", "Microsoft Office 2010", "Twilight", "Modern Family", "Jack and Jill", "Jill", "Glee", "The Vampire Diarie", "King Arthur", "Jack and Jill", "King Arthur", "Windows XP", "Harry Potter", "Feet", "Kung Fu Panda", "Lady Gaga", "Gaga", "Happy Feet", "Twilight", "Hacking", "King"};
 
-        if (queries.length > queryCounter) {
-            System.out.println("Sent - "+queries[queryCounter]);
+        int qLimit = 5;//queries.length;
+
+        if (qLimit == queryCounter) {
+            executing = false;
+        }
+
+        if (qLimit > queryCounter) {
+            System.out.println("Sent - (" + (queryCounter + 1) + "/" + qLimit + ") " + queries[queryCounter]);
             lastQuery = queries[queryCounter++];
             dsManager.getQueryResults(lastQuery);
 
         }
-
-
-
-        if(queryCounter == queries.length)
-        {
-            executing = false;
-        }
-
-
     }
 
     private boolean connectToNetwork() {
@@ -308,7 +305,6 @@ public class FSViewController implements Initializable {
         this.logCtrl.appendLog(str);
 
 
-
     }
 
     /*
@@ -319,8 +315,9 @@ public class FSViewController implements Initializable {
     public void showSearchResults(HashMap<String, String[]> results, int status) {
 
 
-
+        if (!executing) {
             popupCreator.showSearchResults(lastQuery, results, status);
+        }
 
 
         if (status == 3) {
@@ -329,8 +326,7 @@ public class FSViewController implements Initializable {
             searchBtn.setDisable(false);
 
 
-            if(executing)
-            {
+            if (executing) {
                 executeSearchQueries();
             }
         }
@@ -343,8 +339,7 @@ public class FSViewController implements Initializable {
 
     }
 
-    public void writeToFile(String nodeName)
-    {
+    public void writeToFile(String nodeName) {
         logCtrl.writeToFile(nodeName);
     }
 

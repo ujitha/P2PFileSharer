@@ -50,6 +50,7 @@ public class WebServiceDSManager extends DSManager {
     private FSViewController controller;
     private Timer searchTimer;
     private int globalHopCount=0;
+    private boolean foundResult = false;
     private int receivedQs = 0;
     private int forwardedQs = 0;
     private int answeredQs = 0;
@@ -186,7 +187,10 @@ public class WebServiceDSManager extends DSManager {
 
                 if ((ackValue > 0)&&(ackValue < 9998)) {
                     endTime = System.currentTimeMillis();
-                    controller.writeToLog("First Search time : "+(endTime-startTime)+"ms");
+                    if(!foundResult) {
+                        controller.writeToLog("First Search time : " + (endTime - startTime) + "ms");
+                        foundResult = true;
+                    }
                     String ip = searchAck.getIp();
                     String[] results = searchAck.getFileNames();
                     queryResults.put(ip, results);
@@ -440,6 +444,7 @@ public class WebServiceDSManager extends DSManager {
 
         controller.writeToLog("-----------------New Search Query - "+query+" -------------------");
         globalHopCount = 0;
+        foundResult = false;
         controller.writeToLog("Searched for : "+query);
         startTime = System.currentTimeMillis();
         endTime = 0L;
@@ -451,6 +456,10 @@ public class WebServiceDSManager extends DSManager {
         if (!results.isEmpty()) {
             queryResults.put(node.getMyIp()+" - This Node", results.toArray(new String[results.size()]));
             endTime = System.currentTimeMillis();
+            if(!foundResult) {
+                controller.writeToLog("First Search time : " + (endTime - startTime) + "ms");
+                foundResult = true;
+            }
         }
 
         controller.showSearchResults(queryResults,1);
