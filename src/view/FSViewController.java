@@ -16,6 +16,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -244,7 +245,20 @@ public class FSViewController implements Initializable {
             searchTF.setDisable(true);
             String fileName = searchTF.getText();
             lastQuery = fileName;
+            showSearchResults(new HashMap<String, String[]>(),1);
             dsManager.getQueryResults(fileName);
+        });
+
+        searchTF.setOnKeyPressed((event)->{
+            if(event.getCode()== KeyCode.ENTER){
+                searchBtn.setText("Searching...");
+                searchBtn.setDisable(true);
+                searchTF.setDisable(true);
+                String fileName = searchTF.getText();
+                lastQuery = fileName;
+                showSearchResults(new HashMap<String, String[]>(),1);
+                dsManager.getQueryResults(fileName);
+            }
         });
 
         logBtn.setOnAction((event) -> {

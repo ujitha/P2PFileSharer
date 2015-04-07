@@ -463,7 +463,7 @@ public class UDPDSManager extends DSManager {
                 foundResult = true;
             }
         }
-        controller.showSearchResults(queryResults,1);
+        controller.showSearchResults(queryResults,2);
         queryResults.clear();
 
         Random random = new Random();

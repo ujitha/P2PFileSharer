@@ -42,6 +42,10 @@ public class LogWindowController implements Initializable {
     }
 
     public void appendLog(String logStr) {
+        String str = logTextArea.getText();
+        if(str.length()>10000){
+            logTextArea.setText("");
+        }
         logTextArea.appendText(logStr + "\n");
 
     }
