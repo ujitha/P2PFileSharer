@@ -119,8 +119,7 @@ public class UDPDSManager extends DSManager {
         controller.writeToLog("Received Querys - "+receivedQs);
         controller.writeToLog("Routing Querys - "+routingMsgs);
         controller.writeToLog("Routing Table Size - "+connectedNodeList.size());
-
-
+        controller.writeToCsvFile(node.getMyUsername() + "-" + System.currentTimeMillis());
     }
 
     // Returns node's file list
@@ -184,6 +183,7 @@ public class UDPDSManager extends DSManager {
                             endTime = System.currentTimeMillis();
                             if(!foundResult) {
                                 controller.writeToLog("First Search time : " + (endTime - startTime) + "ms");
+                                controller.appendCsvStr((endTime-startTime)+",");
                                 foundResult = true;
                             }
                             String ip = searchAck.getIp();
@@ -445,6 +445,7 @@ public class UDPDSManager extends DSManager {
         globalHopCount = 0;
         foundResult = false;
         controller.writeToLog("Searched for : "+query);
+        controller.appendCsvStr(query+",");
         startTime = System.currentTimeMillis();
         endTime = 0L;
 
@@ -457,6 +458,7 @@ public class UDPDSManager extends DSManager {
             endTime = System.currentTimeMillis();
             if(!foundResult) {
                 controller.writeToLog("First Search time : " + (endTime - startTime) + "ms");
+                controller.appendCsvStr((endTime-startTime)+",");
                 foundResult = true;
             }
         }
@@ -480,6 +482,11 @@ public class UDPDSManager extends DSManager {
             }
             controller.writeToLog("Total Search time : "+(endTime-startTime)+"ms");
             controller.writeToLog("Total Hop count : "+(globalHopCount));
+            if(!foundResult) {
+                controller.appendCsvStr((endTime - startTime) + ",");
+            }
+            controller.appendCsvStr((endTime-startTime)+",");
+            controller.appendCsvStr(globalHopCount+"\n");
             controller.showSearchResults(queryResults, 3);
         }
 
@@ -524,6 +531,11 @@ public class UDPDSManager extends DSManager {
                         }
                         controller.writeToLog("Total Search time : "+(endTime-startTime)+"ms");
                         controller.writeToLog("Total Hop count : "+(globalHopCount));
+                        if(!foundResult) {
+                            controller.appendCsvStr((endTime - startTime) + ",");
+                        }
+                        controller.appendCsvStr((endTime-startTime)+",");
+                        controller.appendCsvStr(globalHopCount+"\n");
                         controller.showSearchResults(queryResults, 3);
                     }
                 });

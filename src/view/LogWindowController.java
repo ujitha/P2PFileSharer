@@ -27,7 +27,7 @@ public class LogWindowController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         logTextArea.setText("");
 
-        clearBtn.setOnAction((event)->{
+        clearBtn.setOnAction((event) -> {
             logTextArea.setText("");
         });
 
@@ -41,17 +41,16 @@ public class LogWindowController implements Initializable {
         });
     }
 
-    public void appendLog(String logStr){
-        logTextArea.appendText(logStr+"\n");
+    public void appendLog(String logStr) {
+        logTextArea.appendText(logStr + "\n");
 
-         }
+    }
 
-    public void writeToFile(String fileName)
-    {
+    public void writeToFile(String fileName) {
         PrintWriter writer = null;
         try {
             writer = new PrintWriter(fileName, "UTF-8");
-            writer.println("------------------ "+ fileName+" --------------------");
+            writer.println("------------------ " + fileName + " --------------------");
             String text = logTextArea.getText();
             writer.append(text);
             writer.close();

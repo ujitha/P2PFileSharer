@@ -20,7 +20,10 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.*;
 import java.util.*;
 
@@ -73,6 +76,7 @@ public class FSViewController implements Initializable {
     private String lastQuery = "";
     private int queryCounter = 0;
     private boolean executing = false;
+    private String csvString;
 
 
     @Override
@@ -156,6 +160,7 @@ public class FSViewController implements Initializable {
         executeBtn.setOnAction((event) -> {
                     queryCounter = 0;
                     executing = true;
+                    csvString = "query,time to first,time to total,hops\n";
                     executeSearchQueries();
 
                 }
@@ -237,6 +242,23 @@ public class FSViewController implements Initializable {
         });
     }
 
+    public void appendCsvStr(String str){
+        csvString = csvString.concat(str);
+    }
+
+    public void writeToCsvFile(String fileName) {
+        PrintWriter writer = null;
+        try {
+            writer = new PrintWriter(fileName+".csv", "UTF-8");
+            writer.println(csvString);
+            writer.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void executeSearchQueries() {
 
         String[] queries = new String[]{"Twilight", "Jack", "American Idol", "Happy Feet", "Twilight saga", "Happy Feet", "Happy Feet", "Feet", "Happy Feet", "Twilight", "Windows", "Happy Feet", "Mission Impossible", "Twilight", "Windows 8", "The", "Happy", "Windows 8", "Happy Feet", "Super Mario", "Jack and Jill", "Happy Feet", "Impossible", "Happy Feet", "Turn Up The Music", "Adventures of Tintin", "Twilight saga", "Happy Feet", "Super Mario", "American Pickers", "Microsoft Office 2010", "Twilight", "Modern Family", "Jack and Jill", "Jill", "Glee", "The Vampire Diarie", "King Arthur", "Jack and Jill", "King Arthur", "Windows XP", "Harry Potter", "Feet", "Kung Fu Panda", "Lady Gaga", "Gaga", "Happy Feet", "Twilight", "Hacking", "King"};
@@ -302,10 +324,7 @@ public class FSViewController implements Initializable {
     }
 
     public void writeToLog(String str) {
-        this.logCtrl.appendLog(str);
-
-
-    }
+        this.logCtrl.appendLog(str);    }
 
     /*
         status = 1 -> initial result
