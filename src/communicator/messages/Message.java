@@ -18,10 +18,15 @@ public abstract class Message {
     public abstract void decodeMessage(String message);
 
     public String[] splitMessage(String message){
+        message=trimLength(message);
+        String[] s=message.split(" ");
+        return s;
+    }
+
+    public String trimLength(String message){
         message=message.trim();
         this.setLength(Integer.parseInt(message.split(" ")[0]));
         message=message.substring(0,this.getLength());
-        String[] s=message.split(" ");
-        return s;
+        return message;
     }
 }

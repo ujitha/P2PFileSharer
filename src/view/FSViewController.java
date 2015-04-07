@@ -4,6 +4,7 @@ import app.DSManager;
 import app.Node;
 import app.UDPDSManager;
 import app.WebServiceDSManager;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
@@ -76,7 +77,7 @@ public class FSViewController implements Initializable {
     private String lastQuery = "";
     private int queryCounter = 0;
     private boolean executing = false;
-    private String csvString;
+    private String csvString = "";
 
 
     @Override
@@ -107,11 +108,11 @@ public class FSViewController implements Initializable {
 
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                serverIPTF.setText(newValue);
+                //serverIPTF.setText(newValue);
 
             }
         });
-//        serverIPTF.setText("10.8.98.24");
+        serverIPTF.setText("10.8.98.13");
         nodeIPCB.getSelectionModel().selectFirst();
         serverPortTF.setText("5001");
         nodePortTF.setText("5100");
@@ -158,10 +159,19 @@ public class FSViewController implements Initializable {
     private void setHandlers() {
 
         executeBtn.setOnAction((event) -> {
+
+
                     queryCounter = 0;
                     executing = true;
                     csvString = "query,time to first,time to total,hops\n";
+
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
                     executeSearchQueries();
+                }
+            });
+
 
                 }
 

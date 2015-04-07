@@ -119,6 +119,7 @@ public class UDPDSManager extends DSManager {
         controller.writeToLog("Received Querys - "+receivedQs);
         controller.writeToLog("Routing Querys - "+routingMsgs);
         controller.writeToLog("Routing Table Size - "+connectedNodeList.size());
+        controller.writeToFile(node.getMyIp()+"-"+node.getMyUsername());
         controller.writeToCsvFile(node.getMyUsername() + "-" + System.currentTimeMillis());
     }
 

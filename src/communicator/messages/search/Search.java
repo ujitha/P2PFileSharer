@@ -88,6 +88,8 @@ public class Search extends Message {
         String[] s=splitMessage(message);
         this.ip=s[2];
         this.port=s[3];
+
+        message=trimLength(message);
         Pattern pattern = Pattern.compile("\"(.*?)\"");
         Matcher matcher = pattern.matcher(message);
         if (matcher.find())

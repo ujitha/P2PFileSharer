@@ -114,6 +114,7 @@ public class AckSearch extends Message{
         this.port=s[4];
         this.hops=Integer.parseInt(s[5]);
 
+        message=trimLength(message);
         Pattern pattern = Pattern.compile("\"(.*?)\"");
         Matcher matcher = pattern.matcher(message);
         int i=0;
@@ -126,4 +127,10 @@ public class AckSearch extends Message{
         }
 
     }
+
+//    public static void main(String[] args) {
+//        String s="0046 SEROK 1 10.8.98.13 5300 0 \"Modern Family\"0\" 0in\"";
+//        AckSearch a=new AckSearch(s);
+//        System.out.println(a.toString());
+//    }
 }
