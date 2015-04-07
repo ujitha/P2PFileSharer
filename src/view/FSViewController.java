@@ -34,6 +34,8 @@ import java.util.*;
  */
 public class FSViewController implements Initializable {
     @FXML
+    AnchorPane mainPane;
+    @FXML
     AnchorPane searchPane;
     @FXML
     AnchorPane filePane;
@@ -160,11 +162,9 @@ public class FSViewController implements Initializable {
     private void setHandlers() {
 
         executeBtn.setOnAction((event) -> {
-
-
-                    queryCounter = 0;
-                    executing = true;
-                    csvString = "query,time to first,time to total,hops\n";
+            queryCounter = 0;
+            executing = true;
+            csvString = "query,time to first,time to total,hops\n";
 
             Platform.runLater(new Runnable() {
                 @Override
@@ -172,18 +172,26 @@ public class FSViewController implements Initializable {
                     executeSearchQueries();
                 }
             });
+        });
 
+        mainPane.setOnKeyPressed((event)->{
+            if(event.isControlDown() && event.isAltDown() && (event.getCode()==KeyCode.E)){
+                queryCounter = 0;
+                executing = true;
+                csvString = "query,time to first,time to total,hops\n";
 
-                }
-
-        );
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        executeSearchQueries();
+                    }
+                });
+            }
+        });
 
         printBtn.setOnAction((event) -> {
-
-                    dsManager.printQueryValues();
-                }
-
-        );
+            dsManager.printQueryValues();
+        });
 
         connectBtn.setOnAction((event) -> {
             connectBtn.setDisable(true);

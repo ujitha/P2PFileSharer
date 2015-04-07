@@ -36,17 +36,17 @@
                   <Font name="System Bold" size="13.0" />
                </font></Label>
             <TextField fx:id="nodePortTF" layoutX="452.0" layoutY="17.0" prefHeight="25.0" prefWidth="143.0" promptText="Node Port Number" />
-            <Button fx:id="connectBtn" layoutX="616.0" layoutY="3.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="148.0" styleClass="green-button" text="Connect">
+            <Button fx:id="connectBtn" layoutX="616.0" layoutY="13.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="148.0" styleClass="green-button" text="Connect">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>
             </Button>
-             <Button fx:id="executeBtn" layoutX="616.0" layoutY="42.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="148.0" styleClass="green-button" text="Execute">
+             <Button fx:id="executeBtn" disable="true" layoutX="616.0" layoutY="42.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="148.0" styleClass="green-button" text="Execute" visible="false">
                  <font>
                      <Font name="System Bold" size="12.0" />
                  </font>
              </Button>
-             <Button fx:id="printBtn" layoutX="616.0" layoutY="80.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="148.0" styleClass="green-button" text="Print">
+             <Button fx:id="printBtn" layoutX="616.0" layoutY="70.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="148.0" styleClass="blue-button" text="Print">
                  <font>
                      <Font name="System Bold" size="12.0" />
                  </font>
